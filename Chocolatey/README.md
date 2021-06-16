@@ -7,7 +7,7 @@
 * **reinstallchocolatey.ps1** - this will reinstall your whole Chocolatey environment. Including all apps that where installed. Used for a complete cleanup/reinstall.
 [Source: chocolatey.org](https://chocolatey.org/)
 
-####Chocolatey in a nutshel
+###Chocolatey in a nutshell
 This is a presentation that I have given once and now want to share with everyone. It just describes the basic concepts of Chocolatey and gives some insights with videos on how it behaves in the real world and what its capabilities are.
 
 ![Chocologo](https://stardestroyer.xyz/content/images/2020/06/chocolatey-1.png)

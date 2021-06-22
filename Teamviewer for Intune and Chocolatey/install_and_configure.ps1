@@ -1,8 +1,12 @@
 #Check for previous installations
-if (Test-Path 'C:\Program Files (x86)\TeamViewer\TeamViewer.exe') {
+
+$application = Get-WmiObject -Class Win32_Product -Filter "Name = 'TeamViewer Host'"
+if ($application -eq "TeamViewer Host") {
     
+	#Stop service
+	net stop TeamViewer
+
     #Uninstall TeamViewer
-    $application = Get-WmiObject -Class Win32_Product -Filter "Name = 'TeamViewer Host'"
     $application.Uninstall()
 
 }

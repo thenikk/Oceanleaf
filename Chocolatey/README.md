@@ -10,4 +10,4 @@
 ### Chocolatey in a nutshell
 This is a presentation that I have given once and now want to share with everyone. It just describes the basic concepts of Chocolatey and gives some insights with videos on how it behaves in the real world and what its capabilities are.
 
-![Chocologo](https://stardestroyer.xyz/content/images/2020/06/chocolatey-1.png)
+![Chocologo](https://chocolatey.org/assets/images/logo_small.svg)

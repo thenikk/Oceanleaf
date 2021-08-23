@@ -1,13 +1,13 @@
-﻿# [Stardestroyer](https://stardestroyer.xyz/)
-
-***Technology Coast.***
+﻿# [Oceanleaf](https://oceanleaf.ch/)
+ 
+![Oceanleaf](https://oceanleaf.ch/content/images/2021/08/oceanleaf25-2.gif)
 
 >Scripts & files for my blog.
 
-This is my personal IT Blog, about Azure Cloud, Microsoft Enterprise Mobility & Security and considerably more about everything what generate's my interests. Niklas Tinner.
+Technology Blog, about Microsoft 365 and Azure, Enterprise Mobility + Security and considerably more about everything what generate's my interests. Niklas Tinner.
 
-## **[About me](https://stardestroyer.xyz/about-me/), Niklas Tinner**
+## **[About me](https://oceanleaf.ch/about-me/), Niklas Tinner**
 
-![enter image description here](https://stardestroyer.xyz/content/images/2021/02/badasscover.png)
+
 
 

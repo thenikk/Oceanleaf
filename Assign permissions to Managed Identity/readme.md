@@ -15,7 +15,7 @@ The ID is in the service instance/resource under Identity.
 
 ![managed-identity-status](https://oceanleaf.ch/content/images/2022/09/managed-identity-status.png)
 
-###Azure AD Enterprise application
+### Azure AD Enterprise application
 The Managed Identites are also found under [AzureAD>Enterprise Applications](https://portal.azure.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview/menuId~/null). Set the filter to 'Application type == Managed Identites'. The name is equal to the Azure resource instance.
 
 ![ea](https://oceanleaf.ch/content/images/2022/09/ea.png)

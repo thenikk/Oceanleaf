@@ -1,10 +1,10 @@
 ﻿# Intune change tracking (Azure Workbook)
 
-## [View the full guide on my blog](oceanleaf.ch/intune-change-tracking/)
+## [View the full guide on my blog](https://oceanleaf.ch/intune-change-tracking/)
 
-## [Implementation guide](oceanleaf.ch/intune-change-tracking-implementation/)
+## [Implementation guide](https://oceanleaf.ch/intune-change-tracking-implementation/)
 
-## [Operation guide](oceanleaf.ch/intune-change-tracking-operation/)
+## [Operation guide](https://oceanleaf.ch/intune-change-tracking-operation/)
 
 
 

@@ -11,7 +11,7 @@
 ## Intune change tracking
 > This Azure Workbook requires the Intune diagnostics settings sent to an Azure Log Analytics Workspace. 
 
-* Richer analyzation of Intune audit logs by providing filters and search options
+* Richer analyzation of Intune Audit logs by providing filters and search options
 * Find Intune events at a single pane of glass
 * Grouping of information types so that you can find the relevant information faster
 * Understand how you run your Intune service find details on actions

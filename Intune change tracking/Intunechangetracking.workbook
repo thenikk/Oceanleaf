@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V1** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: 14.10.2022)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
+        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V2** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: September 2023)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
         "style": "info"
       },
       "customWidth": "80",
@@ -116,10 +116,30 @@
             "linkLabel": "Device operations",
             "subTarget": "Operations",
             "style": "link"
+          },
+          {
+            "id": "5cafdc30-f12a-4fd2-8747-e08dc811affc",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Environment overview",
+            "subTarget": "Environment",
+            "style": "link"
           }
         ]
       },
       "name": "links - 5"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## View overview statistics of your Intune environment\r\nMost of the querys below are looking for **distinct** DeviceID's (in order to not have duplicate and misleading data) and only use the **last contact** entry (for the latest data)."
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "Environment"
+      },
+      "name": "text - 0"
     },
     {
       "type": 12,
@@ -156,11 +176,11 @@
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
-                  "jsonData": "[\r\n    { \"value\":\"Configuration\", \"label\":\"Device configuration profiles\"},\r\n    { \"value\":\"App\", \"label\":\"Apps\" },\r\n    { \"value\":\"Update\", \"label\":\"Update profiles\"},\r\n    { \"value\":\"Compliance\", \"label\":\"Compliance policies\"},\r\n    { \"value\":\"Deployment\", \"label\":\"Deployment profiles\"},\r\n    { \"value\":\"DeviceManagementScript\", \"label\":\"Scripts\"},\r\n    { \"value\":\"DeviceHealthSCript\", \"label\":\"Proactive remediation\"},\r\n    { \"value\":\"Certificate\", \"label\":\"Certificate profile\"}\r\n]",
+                  "jsonData": "[\r\n    { \"value\":\"Configuration\", \"label\":\"Device configuration profiles\"},\r\n    { \"value\":\"App\", \"label\":\"Apps\" },\r\n    { \"value\":\"Update\", \"label\":\"Update profiles\"},\r\n    { \"value\":\"Compliance\", \"label\":\"Compliance policies\"},\r\n    { \"value\":\"Deployment\", \"label\":\"Deployment profiles\"},\r\n    { \"value\":\"DeviceManagementScript\", \"label\":\"Scripts\"},\r\n    { \"value\":\"DeviceHealthSCript\", \"label\":\"Remediation\"},\r\n    { \"value\":\"Certificate\", \"label\":\"Certificate profile\"}\r\n]",
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": "Configuration"
+                  "value": null
                 }
               ],
               "style": "pills",
@@ -240,7 +260,7 @@
                         "timeContext": {
                           "durationMs": 86400000
                         },
-                        "value": ""
+                        "value": "953e5e1d-3b48-4a9f-a627-28929e25cfb9"
                       }
                     ],
                     "style": "pills",
@@ -304,303 +324,17 @@
                         "name": "Information"
                       },
                       {
-                        "type": 1,
-                        "content": {
-                          "json": "These are only the first 10 changes (0-9) from the profile. For more information run the query from \"Search the Audit Event\"",
-                          "style": "warning"
-                        },
-                        "customWidth": "100",
-                        "name": "Attention"
-                      },
-                      {
                         "type": 3,
                         "content": {
                           "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 0;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
+                          "query": "IntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Properties = parse_json(tostring(Properties))\r\n| extend Changes = parse_json(tostring(Properties.Targets[0].ModifiedProperties))\r\n| mv-expand Changes \r\n| extend Name = Changes.Name\r\n| extend OldValue = Changes.Old\r\n| extend NewValue = Changes.New\r\n| where Name !in~(\"DeviceManagementAPIVersion\")\r\n| project Name, OldValue, NewValue",
                           "size": 4,
-                          "title": "Change 0",
+                          "title": "Changes",
                           "timeContextFromParameter": "timerange",
                           "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
+                          "resourceType": "microsoft.operationalinsights/workspaces"
                         },
-                        "name": "change0"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 1;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 1",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change1"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 2;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 2",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change2"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 3;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 3",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change3"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 4;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 4",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change4"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 5;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 5",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change5"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 6;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 6",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change6"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 7;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 7",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change7"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 8;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 8",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change8"
-                      },
-                      {
-                        "type": 3,
-                        "content": {
-                          "version": "KqlItem/1.0",
-                          "query": "//Define the current change number (entry)\r\nlet changenumber = 9;\r\nIntuneAuditLogs\r\n| where CorrelationId == \"{correlationid}\"\r\n| extend Name_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Name)\r\n| extend Old_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].Old)\r\n| extend New_ = tostring(parse_json(tostring(parse_json(tostring(parse_json(Properties).Targets))[0].ModifiedProperties))[changenumber].New)\r\n| project Name_, Old_, New_",
-                          "size": 4,
-                          "title": "Change 9",
-                          "timeContextFromParameter": "timerange",
-                          "queryType": 0,
-                          "resourceType": "microsoft.operationalinsights/workspaces",
-                          "gridSettings": {
-                            "labelSettings": [
-                              {
-                                "columnId": "Name_",
-                                "label": "Settings Name"
-                              },
-                              {
-                                "columnId": "Old_",
-                                "label": "Old value"
-                              },
-                              {
-                                "columnId": "New_",
-                                "label": "New value"
-                              }
-                            ]
-                          }
-                        },
-                        "name": "change9"
+                        "name": "changes"
                       }
                     ]
                   },
@@ -690,7 +424,7 @@
                               "timeContext": {
                                 "durationMs": 86400000
                               },
-                              "value": ""
+                              "value": "Test"
                             }
                           ],
                           "style": "pills",
@@ -1148,7 +882,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "IntuneAuditLogs\r\n| summarize allcount = countif(OperationName contains \"DeviceHealthScript\")\r\n| extend Title = \"Proactive remediation script packages\"",
+              "query": "IntuneAuditLogs\r\n| summarize allcount = countif(OperationName contains \"DeviceHealthScript\")\r\n| extend Title = \"Remediation\"",
               "size": 4,
               "timeContextFromParameter": "timerange",
               "queryType": 0,
@@ -1339,11 +1073,9 @@
                           "palette": "auto"
                         },
                         "numberFormat": {
-                          "unit": 17,
+                          "unit": 0,
                           "options": {
-                            "style": "decimal",
-                            "maximumFractionDigits": 2,
-                            "maximumSignificantDigits": 3
+                            "style": "decimal"
                           }
                         }
                       },
@@ -1983,11 +1715,11 @@
                     "additionalResourceOptions": [],
                     "showDefault": false
                   },
-                  "jsonData": "[\r\n    { \"value\":\"CreateDeviceLogCollectionRequest ManagedDevice\", \"label\":\"Log collection request\"},\r\n    { \"value\":\"CreateDownloadUrl ManagedDevice\", \"label\":\"Download URL\" },\r\n    { \"value\":\"Delete ManagedDevice\", \"label\":\"Delete\"},\r\n    { \"value\":\"syncDevice ManagedDevice\", \"label\":\"Sync\" },\r\n    { \"value\":\"wipe ManagedDevice\", \"label\":\"Wipe\" },\r\n    { \"value\":\"UpdateDevicePrimaryUsers ManagedDevice\", \"label\":\"Update primary user\" },\r\n    { \"value\":\"cleanWindowsDevice ManagedDevice\", \"label\":\"Clean (Fresh start/Autopilot reset)\" },\r\n    { \"value\":\"rebootNow ManagedDevice\", \"label\":\"Reboot\" },\r\n    { \"value\":\"windowsDefenderScan ManagedDevice\", \"label\":\"Defender Scan (quick/full)\" },\r\n    { \"value\":\"windowsDefenderUpdateSignatures ManagedDevice\", \"label\":\"Update Defender signature\" },\r\n    { \"value\":\"retire ManagedDevice\", \"label\":\"Retire\" },\r\n    { \"value\":\"Rename device ManagedDevice\", \"label\":\"Rename\" },\r\n    { \"value\":\"locateDevice ManagedDevice\", \"label\":\"Locate\" }\r\n]",
+                  "jsonData": "[\r\n    { \"value\":\"CreateDeviceLogCollectionRequest ManagedDevice\", \"label\":\"Log collection request\"},\r\n    { \"value\":\"CreateDownloadUrl ManagedDevice\", \"label\":\"Download URL\" },\r\n    { \"value\":\"Delete ManagedDevice\", \"label\":\"Delete\"},\r\n    { \"value\":\"syncDevice ManagedDevice\", \"label\":\"Sync\" },\r\n    { \"value\":\"wipe ManagedDevice\", \"label\":\"Wipe\" },\r\n    { \"value\":\"UpdateDevicePrimaryUsers ManagedDevice\", \"label\":\"Update primary user\" },\r\n    { \"value\":\"cleanWindowsDevice ManagedDevice\", \"label\":\"Clean (Fresh start/Autopilot reset)\" },\r\n    { \"value\":\"rebootNow ManagedDevice\", \"label\":\"Reboot\" },\r\n    { \"value\":\"windowsDefenderScan ManagedDevice\", \"label\":\"Defender Scan (quick/full)\" },\r\n    { \"value\":\"windowsDefenderUpdateSignatures ManagedDevice\", \"label\":\"Update Defender signature\" },\r\n    { \"value\":\"retire ManagedDevice\", \"label\":\"Retire\" },\r\n    { \"value\":\"Rename device ManagedDevice\", \"label\":\"Rename\" },\r\n    { \"value\":\"locateDevice ManagedDevice\", \"label\":\"Locate\" },\r\n    { \"value\":\"initiateOnDemandProactiveRemediation ManagedDevice\", \"label\":\"On demand remediation\" }\r\n]",
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": "syncDevice ManagedDevice"
+                  "value": "initiateOnDemandProactiveRemediation ManagedDevice"
                 }
               ],
               "style": "pills",
@@ -2044,7 +1776,7 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": ""
+                  "value": "5f31d3a2-f7fc-423e-8c6b-5045d8261243"
                 }
               ],
               "style": "pills",
@@ -2086,10 +1818,433 @@
         "value": "Operations"
       },
       "name": "SearchDeviceOperations"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "31ee1395-d897-4e4e-a817-e0cc686eae28",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "os",
+                  "label": "Operating System",
+                  "type": 2,
+                  "isRequired": true,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":\"Windows\", \"label\":\"Windows\", \"selected\":\"true\"},\r\n    { \"value\":\"iOS\", \"label\":\"iOS\", \"selected\":\"true\"},\r\n    { \"value\":\"iPadOS\", \"label\":\"iPadOS\", \"selected\":\"true\"},\r\n    { \"value\":\"MacOS\", \"label\":\"MacOS\", \"selected\":\"true\"},\r\n    { \"value\":\"Linux\", \"label\":\"Linux\", \"selected\":\"true\"}\r\n]\r\n\r\n",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": [
+                    "MacOS",
+                    "Windows"
+                  ]
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 11"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize DistinctDeviceCount = dcount(DeviceId)",
+              "size": 3,
+              "title": "Total Devices",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "DistinctDeviceCount",
+                  "formatter": 18,
+                  "formatOptions": {
+                    "thresholdsOptions": "icons",
+                    "thresholdsGrid": [
+                      {
+                        "operator": "Default",
+                        "thresholdValue": null,
+                        "representation": "Discovery",
+                        "text": "{0}{1}"
+                      }
+                    ]
+                  }
+                },
+                "showBorder": false,
+                "size": "auto"
+              }
+            },
+            "customWidth": "10",
+            "name": "totaldevices",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, CompliantState\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by CompliantState\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Compliance",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Compliant",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "Noncompliant",
+                    "color": "redBright"
+                  },
+                  {
+                    "seriesName": "Not Evaluated",
+                    "color": "gray"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "devicecompliance",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(DeviceId) and \"{os:value}\" has OS and isnotempty(DeviceId)\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, OS\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by OS\r\n| render piechart",
+              "size": 3,
+              "title": "Device OS",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Windows",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "MacOS",
+                    "color": "pink"
+                  },
+                  {
+                    "seriesName": "iOS",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "iPadOS",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Linux",
+                    "color": "turquoise"
+                  },
+                  {
+                    "seriesName": "ChromeOS",
+                    "color": "redBright"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "deviceos",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(Ownership) and isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, Ownership\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by Ownership\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Ownership",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Corporate",
+                    "color": "magenta"
+                  },
+                  {
+                    "seriesName": "Unknown",
+                    "color": "orange"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "deviceownership",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(DeviceId) and \"{os:value}\" has OS and isnotempty(ManagedBy)\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, ManagedBy\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by ManagedBy\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Management Authority",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Intune",
+                    "color": "blueDark"
+                  },
+                  {
+                    "seriesName": "Other",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "MDE",
+                    "color": "brown"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "devicemgmtauthority",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(JoinType) and isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, JoinType\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by JoinType\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Join Type",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Azure AD joined",
+                    "color": "amethyst"
+                  },
+                  {
+                    "seriesName": "Azure AD registered",
+                    "color": "turquoise"
+                  },
+                  {
+                    "seriesName": "Unknown",
+                    "color": "gray"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "devicejointype",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(Manufacturer) and isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, Manufacturer\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by Manufacturer\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Manufacturer",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "15",
+            "name": "devicemanufacturer",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(Model) and isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, Model\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by Model\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Model",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "15",
+            "name": "devicemodel",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where OS == \"Windows\" and isnotempty(SkuFamily) and isnotempty(DeviceId) \r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, SkuFamily\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by SkuFamily\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Sku (Windows only)",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Enterprise",
+                    "color": "greenDarkDark"
+                  },
+                  {
+                    "seriesName": "Pro",
+                    "color": "blueDarkDark"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "devicesku",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(EncryptionStatusString) and isnotempty(DeviceId) and \"{os:value}\" has OS\r\n| summarize LatestEncryptionStatus = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, EncryptionStatusString\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by EncryptionStatusString\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Device Encryption Status",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "True",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "False",
+                    "color": "redBright"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "deviceencryption",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "IntuneDevices\r\n| where isnotempty(SupervisedStatusString) and isnotempty(OS) and tostring(OS) in (\"iOS\", \"iPadOS\", \"MacOS\")\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by SupervisedStatusString\r\n| render piechart\r\n",
+              "size": 3,
+              "title": "Supervised (iOS, iPadOS, MacOS only)",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "True",
+                    "color": "greenDark"
+                  },
+                  {
+                    "seriesName": "False",
+                    "color": "red"
+                  }
+                ]
+              }
+            },
+            "customWidth": "15",
+            "name": "supervised",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "Environment"
+      },
+      "name": "piecharts"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "IntuneDevices\r\n| where isnotempty(DeviceId)\r\n| summarize arg_max(LastContact, *) by DeviceId\r\n| project DeviceName, UPN, Ownership, LastContact, OSVersion, OS, CompliantState, ManagedBy, SerialNumber, Manufacturer, CreatedDate, DeviceState, DeviceRegistrationState, TimeGenerated, DeviceId, ManagedDeviceName, GraphDeviceIsManaged, EncryptionStatusString, JoinType, SupervisedStatusString, WifiMacAddress, StorageTotal, StorageFree, InGracePeriodUntil, JailBroken, SkuFamily, EasID, PrimaryUser, AADTenantId\r\n",
+                    "size": 0,
+                    "showAnalytics": true,
+                    "title": "Distinct devices (distinct last contact)",
+                    "noDataMessageStyle": 2,
+                    "timeContextFromParameter": "timerange",
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "80",
+                  "name": "query - 1"
+                }
+              ]
+            },
+            "name": "search"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "Environment"
+      },
+      "name": "environmentoverview"
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/71ccd6d1-1386-4ea1-96cb-7aad16f8a7b2/resourcegroups/rg-log-main-ch/providers/microsoft.operationalinsights/workspaces/law-main-ch"
+    "/subscriptions/71ccd6d1-1386-4ea1-96cb-7aad16f8a7b2/resourceGroups/rg-log-main-ch/providers/Microsoft.OperationalInsights/workspaces/law-main-ch"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

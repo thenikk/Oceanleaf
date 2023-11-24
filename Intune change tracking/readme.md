@@ -20,7 +20,9 @@ The Intune change tracking Workbook has 4 sections:
 * **Overview** - General Audit event information & visualizations
 * **Search profile types** - Audit events for specific Intune profile types and contents
 * **Device Identity** - Audit event information to device to tenant assignment
-* **Device opeartions** - Intune administrative tasks Audit event information
+* **Device operations** - Intune administrative tasks Audit event information
+* **Environment overview (new with V2.0)** - Get overview statistics of your environment
+* **Cloud PC (new with V3.0)** - Get an overview of your Windows 365 Cloud PC environment
 
 ![overviewIntunechangetracking](https://oceanleaf.ch/content/images/size/w1000/2022/10/overall.png)
 

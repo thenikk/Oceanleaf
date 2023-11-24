@@ -4,8 +4,6 @@
 
 >Scripts & files for my blog.
 
-Technology Blog, about Microsoft 365 and Azure, Enterprise Mobility + Security and considerably more about everything what generate's my interests. Niklas Tinner.
-
 ## **[About me](https://oceanleaf.ch/about-me/), Niklas Tinner**
 
 

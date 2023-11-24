@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V2** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: September 2023)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
+        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V3** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: November 2023)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
         "style": "info"
       },
       "customWidth": "80",
@@ -124,6 +124,14 @@
             "linkLabel": "Environment overview",
             "subTarget": "Environment",
             "style": "link"
+          },
+          {
+            "id": "1787a89e-1a2d-4704-9ca4-cee169665e01",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Cloud PC",
+            "subTarget": "CloudPC",
+            "style": "link"
           }
         ]
       },
@@ -180,7 +188,7 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": null
+                  "value": "Configuration"
                 }
               ],
               "style": "pills",
@@ -2241,6 +2249,221 @@
         "value": "Environment"
       },
       "name": "environmentoverview"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## <a href=\"https://oceanleaf.ch/windows365/\">Windows 365</a> - monitor your Cloud PCs!"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "IntuneDevices\r\n| where isnotempty(Model) and isnotempty(DeviceId) and Model startswith \"Cloud PC\"\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, Ownership\r\n| summarize count()\r\n",
+                    "size": 4,
+                    "showAnalytics": true,
+                    "title": "Count of Cloud PCs",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "tiles",
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "count_",
+                          "formatter": 18,
+                          "formatOptions": {
+                            "thresholdsOptions": "icons",
+                            "thresholdsGrid": [
+                              {
+                                "operator": "Default",
+                                "thresholdValue": null,
+                                "representation": "success",
+                                "text": "{0}{1}"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "tileSettings": {
+                      "titleContent": {
+                        "columnMatch": "count_",
+                        "formatter": 18,
+                        "formatOptions": {
+                          "thresholdsOptions": "icons",
+                          "thresholdsGrid": [
+                            {
+                              "operator": "Default",
+                              "thresholdValue": null,
+                              "representation": "ResourceFlat",
+                              "text": "{0}{1}"
+                            }
+                          ]
+                        }
+                      },
+                      "showBorder": false
+                    }
+                  },
+                  "customWidth": "30",
+                  "name": "allcloudpc"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "Windows365AuditLogs\r\n| summarize count()",
+                    "size": 4,
+                    "showAnalytics": true,
+                    "title": "Total Windows 365 Audit Events",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "tiles",
+                    "tileSettings": {
+                      "titleContent": {
+                        "columnMatch": "count_",
+                        "formatter": 18,
+                        "formatOptions": {
+                          "thresholdsOptions": "icons",
+                          "thresholdsGrid": [
+                            {
+                              "operator": "Default",
+                              "thresholdValue": null,
+                              "representation": "Monitoring",
+                              "text": "{0}{1}"
+                            }
+                          ]
+                        }
+                      },
+                      "showBorder": false
+                    }
+                  },
+                  "customWidth": "30",
+                  "name": "cevents"
+                },
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "Learn how to set up custom alerts for Windows 365 in <a href=\"https://niklastinner.medium.com/50525098417e?source=friends_link&sk=1471cb7b49b25454d41fd9b37dabcd48\">this guide</a>.",
+                    "style": "upsell"
+                  },
+                  "customWidth": "40",
+                  "name": "text - 3"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "IntuneDevices\r\n| where isnotempty(Model) and isnotempty(DeviceId)\r\n| where Model contains \"Cloud PC\"\r\n| summarize LatestLastContact = arg_max(LastContact, *), DistinctDeviceCount = dcount(DeviceId) by DeviceId, Model\r\n| summarize DistinctDeviceCount = dcount(DeviceId), count() by Model\r\n| project Model, DistinctDeviceCount\r\n| render barchart \r\n\r\n",
+                    "size": 1,
+                    "title": "Sku count",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "100",
+                  "name": "Count"
+                }
+              ]
+            },
+            "name": "w365events"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "## Audit Event type search"
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "b3aa5f8d-7505-490a-a49b-a3218e3b470a",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "w365Search",
+                        "label": "Search",
+                        "type": 2,
+                        "description": "Search Windows 365 Audit Event types",
+                        "isRequired": true,
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "jsonData": "[\r\n    { \"value\":\"CloudPcProvisioningPolicy\", \"label\":\"CloudPcProvisioningPolicy\", \"selected\":\"true\"},\r\n    { \"value\":\"CloudPcUserSetting\", \"label\":\"CloudPcUserSetting\"},\r\n    { \"value\":\"CloudPcModel\", \"label\":\"CloudPcModel\"},\r\n    { \"value\":\"health check\", \"label\":\"Health check\"},\r\n    { \"value\":\"CloudPcOnpremisesConnection\", \"label\":\"CloudPcOnpremisesConnection\"}\r\n]\r\n\r\n",
+                        "timeContext": {
+                          "durationMs": 86400000
+                        }
+                      }
+                    ],
+                    "style": "pills",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameters - 1"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "Windows365AuditLogs\r\n| where OperationName contains \"{w365Search}\"\r\n",
+                    "size": 1,
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "query - 2"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "Windows365AuditLogs\r\n| where OperationName contains \"{w365Search}\"\r\n| summarize Changes=count() by bin(TimeGenerated, 1d)",
+                    "size": 0,
+                    "title": "Actions over time",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "barchart"
+                  },
+                  "customWidth": "40",
+                  "name": "overtime"
+                }
+              ]
+            },
+            "name": "group - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "CloudPC"
+      },
+      "name": "cloudPC"
     }
   ],
   "fallbackResourceIds": [

@@ -1,11 +1,8 @@
-﻿# [Oceanleaf](https://oceanleaf.ch/)
- 
-![Oceanleaf](https://oceanleaf.ch/content/images/2021/08/oceanleaf25-2.gif)
+﻿
+# [Oceanleaf](https://oceanleaf.ch/)
 
->Scripts & files for my blog.
+![Oceanleaf](https://www.oceanleaf.ch/content/images/2024/07/oceanleaf-niklas-tinner-1.gif)
 
-## **[About me](https://oceanleaf.ch/about-me/), Niklas Tinner**
+>Content from my blog.
 
-
-
-
+## **[About me - Niklas Tinner](https://oceanleaf.ch/about-me/)**

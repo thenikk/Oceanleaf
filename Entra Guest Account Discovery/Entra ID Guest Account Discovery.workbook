@@ -1,0 +1,1019 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Entra ID Guest Account Discovery\n---\nThe Entra ID Guest Account Workbook provides real-time insights into guest sign-in activity, leveraging the timerange variable for flexible log analysis. It includes advanced log search, visualization tools, and a Home Tenant ID lookup, converting Tenant IDs into domain names for better identification.\n\nDesigned for security monitoring and access insights, this workbook enhances guest user tracking, risk analysis, and anomaly detection. - Version 1.0\n\nPowered by <a href=\"https://oceanleaf.ch\">oceanleaf.ch 🌱</a>\n"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "3ddd1ae6-1026-4b3e-8f28-2e5d372b926e",
+            "version": "KqlParameterItem/1.0",
+            "name": "timerange",
+            "label": "Timerange",
+            "type": 4,
+            "description": "Choose a custom time range for the queries.",
+            "isRequired": true,
+            "isGlobal": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": {
+              "durationMs": 5184000000
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 3"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "2d35410d-c3e0-4a98-a81b-947280c03caa",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Overview ⭐️",
+            "subTarget": "overview",
+            "preText": "Overview",
+            "style": "link"
+          },
+          {
+            "id": "53f6c634-4f72-4cb4-96cb-dd16c24956fe",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Origin Tenant Lookup 🕵️‍♂️",
+            "subTarget": "origintenant",
+            "preText": "Guest Origin Tenant Lookup",
+            "style": "link"
+          },
+          {
+            "id": "af31facd-ffeb-43b4-8f0a-132c1c2522c7",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Search 🔎",
+            "subTarget": "search",
+            "style": "link"
+          },
+          {
+            "id": "c5d3535a-ada9-49fb-a09a-1bcf74880603",
+            "cellValue": "selTab",
+            "linkTarget": "parameter",
+            "linkLabel": "Stale Guest Account Discovery 💀",
+            "subTarget": "stale",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "links - 9"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Sign-ins over time"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "### Total unique active Guest Accounts"
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize GuestCount = dcount(UserPrincipalName)",
+                    "size": 1,
+                    "timeContextFromParameter": "timerange",
+                    "exportToExcelOptions": "all",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat"
+                  },
+                  "name": "query - 1"
+                }
+              ]
+            },
+            "customWidth": "15",
+            "conditionalVisibility": {
+              "parameterName": "selTab",
+              "comparison": "isEqualTo",
+              "value": "overview"
+            },
+            "name": "group kql log - Copy",
+            "styleSettings": {
+              "maxWidth": "15%"
+            }
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize UserCount = dcount(UserPrincipalName), TotalSignInCount = count() by bin(TimeGenerated, 1d)\n| order by TimeGenerated asc\n| render timechart\n",
+              "size": 0,
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "linechart",
+              "chartSettings": {
+                "showDataPoints": true
+              }
+            },
+            "customWidth": "80",
+            "name": "query - 1"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "name": "group kql log - main"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Top Domains from Guests"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"  \n| where isnotempty(UserPrincipalName)\n| extend Domain = tostring(split(UserPrincipalName, \"@\")[-1]) \n| summarize SignInCount = count() by Domain  \n| order by SignInCount desc \n| take 50",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "mapSettings": {
+                "locInfo": "CountryRegion",
+                "locInfoColumn": "Country",
+                "sizeSettings": "Count",
+                "sizeAggregation": "Sum",
+                "legendMetric": "Count",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "Count",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "greenRed"
+                }
+              }
+            },
+            "name": "query - 1 - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "### Recent Guest Invites"
+            },
+            "name": "text - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "AuditLogs\n| where Category == \"UserManagement\" \n| where ActivityDisplayName == \"Invite external user\"\n| extend Initiator = tostring(parse_json(InitiatedBy).user.userPrincipalName) // Extracts inviter's UPN\n| mv-expand AdditionalDetails\n| where isnotempty(AdditionalDetails)\n| extend DetailKey = tostring(parse_json(AdditionalDetails).key), DetailValue = tostring(parse_json(AdditionalDetails).value)\n| where DetailKey == \"invitedUserEmailAddress\"  // Extracts guest email\n| summarize EventTime = max(TimeGenerated), Initiators = tostring(make_set(Initiator)) by InvitedGuestEmail = DetailValue\n| extend Initiators = replace(@'[\\[\\]\"\\,]', \"\", Initiators) // Removes brackets, quotes, and commas\n| order by EventTime desc\n| take 100\n",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 3"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "customWidth": "50",
+      "name": "group kql log - Copy - Copy top - Copy",
+      "styleSettings": {
+        "maxWidth": "50%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Guest Sign-in Geolocation"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n|extend ParseLocation = parse_json(LocationDetails)\n| extend Country = iff(ParseLocation.countryOrRegion == '', 'Unknown', tostring(ParseLocation.countryOrRegion))\n| extend City = iff(ParseLocation.city == '', 'Unknown', tostring(ParseLocation.city))\n| extend State = iff(ParseLocation.state == '', 'Unknown', tostring(ParseLocation.state))\n| extend GeoCoord = ParseLocation.geoCoordinates\n| extend ParseGeoCoord = parse_json(GeoCoord)\n| extend Latitude = ParseGeoCoord.latitude\n| extend Longitude = ParseGeoCoord.longitude\n| project UserDisplayName, Location, City, State, Country\n| summarize Count = count() by City, State, Country",
+              "size": 0,
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "map",
+              "chartSettings": {
+                "showMetrics": false
+              },
+              "mapSettings": {
+                "locInfo": "CountryRegion",
+                "locInfoColumn": "Country",
+                "sizeSettings": "Count",
+                "sizeAggregation": "Sum",
+                "legendMetric": "Count",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "Count",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "greenRed"
+                }
+              }
+            },
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n|extend ParseLocation = parse_json(LocationDetails)\n| extend Country = iff(ParseLocation.countryOrRegion == '', 'Unknown', tostring(ParseLocation.countryOrRegion))\n| extend City = iff(ParseLocation.city == '', 'Unknown', tostring(ParseLocation.city))\n| extend State = iff(ParseLocation.state == '', 'Unknown', tostring(ParseLocation.state))\n| extend GeoCoord = ParseLocation.geoCoordinates\n| extend ParseGeoCoord = parse_json(GeoCoord)\n| extend Latitude = ParseGeoCoord.latitude\n| extend Longitude = ParseGeoCoord.longitude\n| project UserDisplayName, Location, City, State, Country\n| summarize Count = count() by City, State, Country",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "Count",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "Count",
+                  "sortOrder": 2
+                }
+              ]
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "customWidth": "50",
+      "name": "group kql log - Copy",
+      "styleSettings": {
+        "maxWidth": "45%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Sign-in failed Status"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\" and ResultDescription != \"\"\n| summarize Count = count() by ResultDescription\n| order by Count desc\n| render piechart\n",
+              "size": 3,
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "showMetrics": false,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Access has been blocked due to conditional access policies.",
+                    "color": "redBright"
+                  },
+                  {
+                    "seriesName": "External security challenge was not satisfied.",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Device Authentication Required - DeviceId -DeviceAltSecId claims are null OR no device corresponding to the device identifier exists.",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "Due to a configuration change made by your administrator, or because you moved to a new location, you must enroll in multi-factor authentication to access the tenant.",
+                    "color": "brown"
+                  },
+                  {
+                    "seriesName": "Other",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "Strong Authentication is required.",
+                    "color": "magenta"
+                  }
+                ]
+              }
+            },
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\" and ResultDescription != \"\"\n| summarize Count = count() by ResultDescription\n| order by Count desc\n",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "exportToExcelOptions": "all",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 1 - Copy"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "customWidth": "50",
+      "name": "group kql log",
+      "styleSettings": {
+        "maxWidth": "40%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Target App accessed"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| where isnotempty(AppDisplayName)  // Stellt sicher, dass die Ziel-App vorhanden ist\n| summarize SignInCount = count() by AppDisplayName\n| order by SignInCount desc",
+              "size": 3,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart",
+              "mapSettings": {
+                "locInfo": "CountryRegion",
+                "locInfoColumn": "Country",
+                "sizeSettings": "Count",
+                "sizeAggregation": "Sum",
+                "legendMetric": "Count",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "Count",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "greenRed"
+                }
+              }
+            },
+            "name": "query - 1 - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "### Top active Guest Identities"
+            },
+            "name": "text - 0 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize Count = count() by UserPrincipalName\n| order by Count desc\n| render piechart\n",
+              "size": 3,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "query - 1 - Copy"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "customWidth": "50",
+      "name": "group kql log - Copy - Copy top",
+      "styleSettings": {
+        "maxWidth": "40%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Cross-Tenant Access Type"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize count() by CrossTenantAccessType\n| render piechart ",
+              "size": 3,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "mapSettings": {
+                "locInfo": "CountryRegion",
+                "locInfoColumn": "Country",
+                "sizeSettings": "Count",
+                "sizeAggregation": "Sum",
+                "legendMetric": "Count",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "Count",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "greenRed"
+                }
+              }
+            },
+            "name": "query - 1"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "customWidth": "50",
+      "name": "group kql log - Copy - Copy",
+      "styleSettings": {
+        "maxWidth": "45%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "### Recent Sign-ins from Guests"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| extend ErrorCode = tostring(Status.errorCode)\n| extend FailureReason = tostring(Status.failureReason)\n| project TimeGenerated, UserPrincipalName, AppDisplayName, Location, HomeTenantId, ErrorCode, FailureReason\n| order by TimeGenerated desc\n| take 100\n",
+              "size": 0,
+              "showAnalytics": true,
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "TimeGenerated",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "TimeGenerated",
+                  "sortOrder": 2
+                }
+              ]
+            },
+            "name": "query - 1"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "name": "group - 1"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "# Home Tenant IDs from Guests"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize SignInCount = count() by HomeTenantId\n| order by SignInCount desc\n",
+              "size": 0,
+              "timeContextFromParameter": "timerange",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "mapSettings": {
+                "locInfo": "CountryRegion",
+                "locInfoColumn": "Country",
+                "sizeSettings": "Count",
+                "sizeAggregation": "Sum",
+                "legendMetric": "Count",
+                "legendAggregation": "Sum",
+                "itemColorSettings": {
+                  "nodeColorField": "Count",
+                  "colorAggregation": "Sum",
+                  "type": "heatmap",
+                  "heatmapPalette": "greenRed"
+                }
+              }
+            },
+            "name": "query - 1 - Copy"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "origintenant"
+      },
+      "customWidth": "45",
+      "name": "group kql log - Copy - Copy - Copy",
+      "styleSettings": {
+        "maxWidth": "40%"
+      }
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "# Tenant ID Lookup\nEnter a Tenant ID to lookup the domain name. (Relying on external website)",
+              "style": "upsell"
+            },
+            "name": "text - 0"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "9880184f-4cd7-463e-93ea-15de0978e707",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "TenantId",
+                  "label": "Enter a Tenant ID",
+                  "type": 1,
+                  "isRequired": true,
+                  "typeSettings": {
+                    "isSearchBox": true
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "100",
+            "name": "parameters - 3",
+            "styleSettings": {
+              "maxWidth": "100%"
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "## [🔍 Tenant Lookup für {TenantId}](https://tenantidlookup.com/{TenantId})",
+                    "style": "info"
+                  },
+                  "name": "text - 0 - Copy"
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "group - 11"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "origintenant"
+      },
+      "customWidth": "50",
+      "name": "lookuptitle"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "d29c1c9f-1ac0-494b-aa49-c588907d90eb",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "User",
+                  "type": 1,
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": ""
+                },
+                {
+                  "id": "0f4b98a0-20b7-4d1c-96db-0fa18eed9eda",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "App",
+                  "type": 1,
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "value": ""
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 0"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "## Recent User Sign-ins"
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\n| where UserType contains \"Guest\"\n| extend ErrorCode = tostring(Status.errorCode)\n| extend FailureReason = tostring(Status.failureReason)\n| project TimeGenerated, UserPrincipalName, AppDisplayName, Location, HomeTenantId, ErrorCode, FailureReason\n| order by TimeGenerated desc\n",
+                    "size": 0,
+                    "showAnalytics": true,
+                    "timeContextFromParameter": "timerange",
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "query - 1"
+                }
+              ]
+            },
+            "name": "group - 1"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "### Last successful sign-in"
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\n| where UserPrincipalName contains \"{User}\"\n| where AppDisplayName contains \"{App}\"\n| where ResultType == 0 \n| summarize LastSuccessfulSignIn = max(TimeGenerated)\n",
+                    "size": 4,
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueField": "LastSuccessfulSignIn",
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": []
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "small"
+                    },
+                    "mapSettings": {
+                      "locInfo": "LatLong"
+                    }
+                  },
+                  "name": "query - 2"
+                }
+              ]
+            },
+            "customWidth": "20",
+            "name": "group - 3"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "### Most recent failed sign-ins"
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\n| where UserPrincipalName contains \"{User}\"\n| where AppDisplayName contains \"{App}\"\n| extend ErrorCode = iff(isnotempty(tostring(Status.errorCode)), tostring(Status.errorCode), \"0\")\n| extend FailureReason = iff(isnotempty(tostring(Status.failureReason)), tostring(Status.failureReason), \"None\")\n| where ErrorCode != \"0\"\n| project TimeGenerated, ErrorCode, FailureReason, UserPrincipalName, AppDisplayName, Location, HomeTenantId\n| order by TimeGenerated desc\n",
+                    "size": 0,
+                    "showAnalytics": true,
+                    "timeContext": {
+                      "durationMs": 86400000
+                    },
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "query - 1"
+                }
+              ]
+            },
+            "customWidth": "80",
+            "name": "group - 4"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "search"
+      },
+      "name": "search"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "## Inactive Guest Accounts count since\nTimerange where no sign-in logs from Guest Accounts are found. Please specify the Inactivity timeframe below."
+                  },
+                  "name": "text - 0"
+                },
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "Ensure that the Timerange and the available log data cover a period longer than the selected Inactivity parameter below.",
+                    "style": "warning"
+                  },
+                  "customWidth": "50",
+                  "name": "text - 4"
+                },
+                {
+                  "type": 9,
+                  "content": {
+                    "version": "KqlParameterItem/1.0",
+                    "parameters": [
+                      {
+                        "id": "24b88e94-ac25-40cc-899b-91501b72c420",
+                        "version": "KqlParameterItem/1.0",
+                        "name": "range",
+                        "label": "Inactivite since",
+                        "type": 2,
+                        "isGlobal": true,
+                        "typeSettings": {
+                          "additionalResourceOptions": [],
+                          "showDefault": false
+                        },
+                        "jsonData": "[\n  { \"label\": \"Last 1 day\", \"value\": \"1d\" },\n  { \"label\": \"Last 7 days\", \"value\": \"7d\" },\n  { \"label\": \"Last 30 days\", \"value\": \"30d\", \"default\": true },\n  { \"label\": \"Last 90 days\", \"value\": \"90d\" },\n  { \"label\": \"Last 180 days\", \"value\": \"180d\" },\n  { \"label\": \"Last 365 days\", \"value\": \"365d\" }\n]\n",
+                        "value": "7d"
+                      }
+                    ],
+                    "style": "pills",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "name": "parameter - range"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Count\nHow many Guest Accounts did not have a sign-in since Inactivity timeframe."
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize LastSignIn = max(TimeGenerated) by UserPrincipalName\n| where LastSignIn <= ago({range})\n| summarize dcount(UserPrincipalName)\n",
+                          "size": 1,
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "stat"
+                        },
+                        "name": "query - 1 - Copy"
+                      }
+                    ]
+                  },
+                  "customWidth": "15",
+                  "name": "count"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\n| where UserType contains \"Guest\"\n| summarize LastSignIn = max(TimeGenerated) by UserPrincipalName\n| where LastSignIn <= ago({range})\n| project UserPrincipalName, LastSignIn\n| order by LastSignIn asc\n",
+                    "size": 4,
+                    "showAnalytics": true,
+                    "timeContextFromParameter": "timerange",
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "75",
+                  "name": "query - 1"
+                }
+              ]
+            },
+            "name": "group - 0"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "selTab",
+        "comparison": "isEqualTo",
+        "value": "stale"
+      },
+      "name": "stale"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/49623a5a-c45e-4381-ae75-f2b64c965a73/resourceGroups/rg-Log-ch/providers/Microsoft.OperationalInsights/workspaces/law-main-ch"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

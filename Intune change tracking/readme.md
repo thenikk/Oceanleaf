@@ -1,5 +1,5 @@
 ﻿
-# Intune change tracking (Azure Workbook)
+# Intune Change Tracking (Azure Workbook)
 
   
 ## [View the full guide on my blog](https://www.oceanleaf.ch/intune-change-tracking/)

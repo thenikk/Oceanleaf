@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V3** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: November 2023)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
+        "json": "# Intune change tracking\r\nIntune change tracking Workbook **V3** by [Niklas Tinner](https://twitter.com/NiklasTinner). *(last update: April 2025)*\r\n* View the [full implementation guide](https://oceanleaf.ch/intune-change-tracking/).\r\n* Make sure that Intune diagnostics data > Audit logs are sent to the selected Log Analytics Workspace.\r\n* Powered by [Oceanleaf.ch](https://oceanleaf.ch/) ",
         "style": "info"
       },
       "customWidth": "80",
@@ -13,9 +13,9 @@
     {
       "type": 1,
       "content": {
-        "json": "[![Oceanleaf logo](https://oceanleaf.ch/content/images/size/w1000/2022/10/logo_only.png)](https://oceanleaf.ch/)"
+        "json": "[![Oceanleaf logo](https://www.oceanleaf.ch/content/images/2025/04/oceanleaf.png)](https://oceanleaf.ch/)"
       },
-      "customWidth": "5",
+      "customWidth": "20",
       "name": "Oceanleaf Logo"
     },
     {
@@ -2467,7 +2467,7 @@
     }
   ],
   "fallbackResourceIds": [
-    "/subscriptions/71ccd6d1-1386-4ea1-96cb-7aad16f8a7b2/resourceGroups/rg-log-main-ch/providers/Microsoft.OperationalInsights/workspaces/law-main-ch"
+    "/subscriptions/49623a5a-c45e-4381-ae75-f2b64c965a73/resourceGroups/rg-Log-ch/providers/Microsoft.OperationalInsights/workspaces/law-main-ch"
   ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }

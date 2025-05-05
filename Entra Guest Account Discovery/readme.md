@@ -1,24 +1,38 @@
-﻿
 # Entra ID Guest Account Discovery (Azure Workbook)
 
-  
+This Azure Workbook helps organizations monitor and investigate **guest user activity** in Microsoft Entra ID.  
+It provides a centralized, interactive view into guest sign-ins, tenant origins, and account lifecycle status – ideal for security, compliance, and identity governance teams.
 
+---
 
-> This Azure Workbook requires the Sign-in Logs diagnostics settings sent to an Azure Log Analytics Workspace.
+## ✨ Features
 
+- 📊 **Real-time visibility** into guest sign-in activity across your environment  
+- 🔍 **Flexible log analysis** powered by workbook parameters (e.g. time range)  
+- 🏷️ **Tenant ID to domain resolution** for clearer guest origin identification  
+- 🧭 **Advanced filtering and search tools** for guest account investigations  
+- 🚨 **Detection of stale or inactive guest accounts** for improved security posture  
+- 🔒 Supports **risk detection**, **access reviews**, and **identity hygiene**
 
--   Provides real-time insights into guest sign-in activity with advanced log search and visualization tools.
--   Enables flexible log analysis using the timerange variable for deeper investigation.
--   Converts Tenant IDs into domain names for better identification of guest users.
--   Improves guest user tracking, risk analysis, and anomaly detection.
+---
 
-The Entra ID Guest Account Workbook consists of the following sections:
+## 📂 Workbook Sections
 
--   **Overview** - General insights and visualizations for guest sign-ins.
--   **Origin Tenant Lookup** - Identifies the home Tenant of guest accounts.
--   **Search** - Provides advanced search options for guest account activities.
--   **Stale Guest Account Discovery** - Detects inactive or stale guest accounts for better security monitoring.
+- **Overview** – General insights and visualizations for guest sign-ins  
+- **Origin Tenant Lookup** – Maps guest accounts to their home Tenants (domain resolution)  
+- **Search** – Allows detailed lookup and filtering of guest sign-in events  
+- **Stale Guest Account Discovery** – Highlights inactive or aging guest accounts for clean-up
 
-  
+---
 
+## 📦 Requirements
 
+- **Log Analytics Workspace** connected to your Entra ID
+- Enabled **Sign-in Logs** diagnostic setting
+- Required table: `SigninLogs`
+
+---
+
+1. Clone this repository or copy the workbook JSON
+2. Open **Log Analytics Workspace -> Monitor -> Workbooks**, open the json editor view (</>) and paste the JSON file content
+4. Adjust parameters to explore the data dynamically.

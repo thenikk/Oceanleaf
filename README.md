@@ -1,6 +1,6 @@
 # [Oceanleaf](https://www.oceanleaf.ch)
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/niklastinner)  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/niklas-tinner/)  
 [![Website](https://img.shields.io/badge/Oceanleaf.ch-Visit-blue)](https://www.oceanleaf.ch)  
 [![Follow on X](https://img.shields.io/badge/X-Follow-black?logo=x)](https://x.com/NiklasTinner)
 

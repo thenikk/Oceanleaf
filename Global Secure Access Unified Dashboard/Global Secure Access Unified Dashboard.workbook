@@ -1,0 +1,1033 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Global Secure Access Unified Dashboard\nThis dashboard provides a centralized view of GSA (Global Secure Access) traffic across multiple channels, including Private Access, Internet, and Microsoft 365. It features interactive charts, destination insights, and source-origin data, enabling real-time monitoring, analysis, and statistics. Designed for visibility and control, it helps identify trends, usage patterns, and security-relevant activity across your organization’s network traffic flows. -Version 1.0\n\nPowered by <a href=\"https://oceanleaf.ch\">oceanleaf.ch 🌱</a>"
+      },
+      "customWidth": "70",
+      "name": "text - 0"
+    },
+    {
+      "type": 18,
+      "content": {
+        "version": "ImageItem/1.0",
+        "imageUrl": "https://www.oceanleaf.ch/content/images/size/w1000/2025/04/oceanleaf.png",
+        "size": 4,
+        "title": "",
+        "altText": "Oceanleaf"
+      },
+      "customWidth": "15",
+      "name": "image - 1"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "d88b5613-6073-4320-bd0c-3ac9ce5985d2",
+            "version": "KqlParameterItem/1.0",
+            "name": "timerange",
+            "label": "Timerange",
+            "type": 4,
+            "isGlobal": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": {
+              "durationMs": 7776000000
+            }
+          },
+          {
+            "id": "d8e394e4-1841-4dcc-9073-2ab95cb778f8",
+            "version": "KqlParameterItem/1.0",
+            "name": "channel",
+            "label": "Traffic Channel",
+            "type": 2,
+            "description": "Select Traffic Channel",
+            "isGlobal": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\n    { \"value\":\"\", \"label\":\"All\", \"selected\":true},\n    { \"value\":\"internet\", \"label\":\"Internet Access\"},\n    { \"value\":\"private\", \"label\":\"Private Access\" },\n     {\"value\":\"microsoft365\", \"label\":\"Microsoft 365\" }\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 5"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action == \"Allow\"\n| summarize count()",
+              "size": 4,
+              "title": "Allowed connections",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "stat",
+              "tileSettings": {
+                "showBorder": false
+              },
+              "statSettings": {
+                "valueAggregation": "None",
+                "colorSettings": {
+                  "type": "static",
+                  "mode": "background",
+                  "heatmapPalette": "greenRed",
+                  "thresholdsGrid": []
+                },
+                "iconSettings": {
+                  "thresholdsGrid": [
+                    {
+                      "sourceColumn": "count_",
+                      "operator": ">",
+                      "thresholdValue": "0",
+                      "representation": "success"
+                    }
+                  ]
+                },
+                "tagText": "",
+                "valueFontStyle": "auto"
+              }
+            },
+            "customWidth": "20",
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action == \"Block\"\n| summarize count()",
+              "size": 4,
+              "title": "Blocked connections",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "stat",
+              "tileSettings": {
+                "showBorder": false
+              },
+              "statSettings": {
+                "valueAggregation": "None",
+                "colorSettings": {
+                  "type": "static",
+                  "mode": "background",
+                  "heatmapPalette": "greenRed",
+                  "thresholdsGrid": []
+                },
+                "iconSettings": {
+                  "thresholdsGrid": [
+                    {
+                      "sourceColumn": "count_",
+                      "operator": ">",
+                      "thresholdValue": "0",
+                      "representation": "critical"
+                    }
+                  ]
+                },
+                "tagText": "",
+                "valueFontStyle": "auto"
+              }
+            },
+            "customWidth": "20",
+            "name": "query - 0 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| summarize ['Total Sent'] = strcat(round(sum(SentBytes) / 1024.0 / 1024.0 / 1024.0, 2), \" GB\")\n",
+              "size": 4,
+              "title": "Sent Traffic",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "stat",
+              "tileSettings": {
+                "showBorder": false
+              },
+              "statSettings": {
+                "valueAggregation": "None",
+                "colorSettings": {
+                  "type": "static",
+                  "mode": "background",
+                  "heatmapPalette": "greenRed",
+                  "thresholdsGrid": []
+                },
+                "iconSettings": {
+                  "thresholdsGrid": [
+                    {
+                      "operator": "contains",
+                      "thresholdValue": ".",
+                      "representation": "up"
+                    }
+                  ]
+                },
+                "tagText": "",
+                "valueFontStyle": "auto"
+              }
+            },
+            "customWidth": "15",
+            "name": "query - 0 - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| summarize ['Total Sent'] = strcat(round(sum(ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2), \" GB\")\n",
+              "size": 4,
+              "title": "Received Traffic",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "stat",
+              "tileSettings": {
+                "showBorder": false
+              },
+              "statSettings": {
+                "valueAggregation": "None",
+                "colorSettings": {
+                  "type": "static",
+                  "mode": "background",
+                  "heatmapPalette": "greenRed",
+                  "thresholdsGrid": []
+                },
+                "iconSettings": {
+                  "thresholdsGrid": [
+                    {
+                      "operator": "contains",
+                      "thresholdValue": ".",
+                      "representation": "down"
+                    }
+                  ]
+                },
+                "tagText": "",
+                "valueFontStyle": "auto"
+              }
+            },
+            "customWidth": "15",
+            "name": "query - 0 - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "NetworkAccessTraffic\n| summarize count() by TrafficType",
+              "size": 1,
+              "title": "Channel Traffic Distribution",
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "internet",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "microsoft365",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "private",
+                    "color": "amethyst"
+                  }
+                ]
+              }
+            },
+            "customWidth": "30",
+            "name": "query - 3"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let TrafficByDay = \n    NetworkAccessTraffic\n    | where TrafficType contains \"{channel}\"\n    | extend TotalBytes = SentBytes + ReceivedBytes\n    | summarize Traffic_GB = round(sum(TotalBytes) / 1024.0 / 1024.0 / 1024.0, 2) by bin(TimeGenerated, 1d);\n\nlet ActiveUsersByDay = \n    NetworkAccessTraffic\n    | where TrafficType contains \"{channel}\"\n    | summarize ActiveUsers = dcount(UserPrincipalName) by bin(TimeGenerated, 1d);\n\nlet ActiveDevicesByDay = \n    NetworkAccessTraffic\n    | where TrafficType contains \"{channel}\"\n    | summarize ActiveDevices = dcount(DeviceId) by bin(TimeGenerated, 1d);\n\n// Join für kombinierten Time Chart\nTrafficByDay\n| join kind=inner ActiveUsersByDay on TimeGenerated\n| join kind=inner ActiveDevicesByDay on TimeGenerated\n| order by TimeGenerated asc\n",
+              "size": 0,
+              "aggregation": 3,
+              "title": "Activity Time Chart",
+              "noDataMessageStyle": 3,
+              "timeContextFromParameter": "timerange",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart",
+              "tileSettings": {
+                "showBorder": false
+              },
+              "chartSettings": {
+                "showLegend": true
+              }
+            },
+            "customWidth": "80",
+            "name": "query - 5"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| summarize UniqueUserCount = dcount(UserPrincipalName)\n",
+                    "size": 4,
+                    "title": "Unique Active Users",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "tileSettings": {
+                      "showBorder": false
+                    },
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "Person"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "name": "query - 0 - Copy - Copy - Copy - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| summarize UniqueDeviceCount = dcount(DeviceId)\n",
+                    "size": 4,
+                    "title": "Unique Active Devices",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "tileSettings": {
+                      "showBorder": false
+                    },
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "Initial_Access"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+                }
+              ]
+            },
+            "customWidth": "15",
+            "name": "chartstats"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "---"
+            },
+            "name": "text - 8"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "cd123f4c-d643-430c-b0d6-bda19d7ee738",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "action",
+                  "label": "Allowed/Blocked",
+                  "type": 2,
+                  "description": "Filter if traffic was allowed/blocked",
+                  "isGlobal": true,
+                  "typeSettings": {
+                    "additionalResourceOptions": [],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\n    { \"value\":\"\", \"label\":\"All\", \"selected\":true},\n    { \"value\":\"Allow\", \"label\":\"Allowed\"},\n    { \"value\":\"Block\", \"label\":\"Blocked\" }\n]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "name": "parameters - 6"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "# Destination\nDetails for destination of GSA connected clients.\nSome stats require identification by the service and may not be completely accurate."
+                  },
+                  "customWidth": "15",
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where isnotempty(CloudAppName)\n| summarize UniqueCloudApps = dcount(CloudAppName)\n",
+                    "size": 4,
+                    "title": "Unique Cloud Apps",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "Globe"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "20",
+                  "name": "query - 2"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| summarize dcount(CloudAppCategory)\n",
+                    "size": 4,
+                    "title": "Unique Cloud App Categories",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "ResourceFlat"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "20",
+                  "name": "query - 2 - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where isnotnull(CloudAppGeneralScore)\n| summarize AvgCloudAppScore = round(avg(CloudAppGeneralScore), 2)\n",
+                    "size": 4,
+                    "title": "Average Cloud App Score",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "1"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "20",
+                  "name": "query - 2 - Copy - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where isnotnull(CloudAppRiskScore)\n| summarize AvgCloudAppScore = round(avg(CloudAppRiskScore), 2)\n",
+                    "size": 4,
+                    "title": "Average Cloud App Score",
+                    "noDataMessage": "Higher is better / less risky",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "2"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "20",
+                  "name": "query - 2 - Copy - Copy - Copy"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where CloudAppName != \"\"\n| summarize Count = count() by CloudAppName\n| order by Count desc\n",
+                          "size": 3,
+                          "title": "Cloud Apps",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "40",
+                        "name": "query - 1"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where DestinationWebCategories != \"\"\n| summarize Count = count() by DestinationWebCategories\n| order by Count desc\n",
+                          "size": 3,
+                          "title": "Cloud App Categories",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "45",
+                        "name": "query - 1 - Copy"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(CloudAppName)\n| summarize \n    TotalSentBytesGB = round(sum(SentBytes) / 1024.0 / 1024.0 / 1024.0, 2),\n    TotalReceivedBytesGB = round(sum(ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by CloudAppName\n| order by TotalTrafficGB desc\n| take 100\n",
+                          "size": 0,
+                          "title": "Cloud Apps by Traffic",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "customWidth": "90",
+                        "name": "query - 1 - Copy"
+                      }
+                    ]
+                  },
+                  "name": "deststats"
+                }
+              ]
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "channel",
+                "comparison": "isNotEqualTo",
+                "value": "private"
+              },
+              {
+                "parameterName": "channel",
+                "comparison": "isNotEqualTo",
+                "value": "microsoft365"
+              }
+            ],
+            "name": "internetdestinationdetails"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "# Private Destination\n"
+                  },
+                  "customWidth": "20",
+                  "name": "text - 0"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType == \"private\" and isnotempty(DestinationIp)\n| where Action contains \"{action}\"\n| summarize UniqueDestinationIps = dcount(DestinationIp)\n",
+                    "size": 4,
+                    "title": "Unique IPs / Ressources",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "Star"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "15",
+                  "name": "query - 1"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType == \"private\"\n| where Action contains \"{action}\"\n| where isnotempty(ConnectorName)\n| summarize UniqueConnectorNames = dcount(ConnectorName)\n",
+                    "size": 4,
+                    "title": "Count of Connectors",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "visualization": "stat",
+                    "statSettings": {
+                      "valueAggregation": "None",
+                      "colorSettings": {
+                        "type": "static",
+                        "mode": "background",
+                        "heatmapPalette": "greenRed",
+                        "thresholdsGrid": []
+                      },
+                      "iconSettings": {
+                        "thresholdsGrid": [
+                          {
+                            "operator": ">",
+                            "thresholdValue": "0",
+                            "representation": "Retain"
+                          }
+                        ]
+                      },
+                      "tagText": "",
+                      "valueFontStyle": "auto"
+                    }
+                  },
+                  "customWidth": "15",
+                  "name": "query - 1 - Copy"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(AppId)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by AppId\n| order by TotalTrafficGB desc\n",
+                          "size": 0,
+                          "title": "Top AppIDs by Traffic",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "customWidth": "33",
+                        "name": "query - 2"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(ConnectorName)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by ConnectorName\n| order by TotalTrafficGB desc\n",
+                          "size": 3,
+                          "title": "Top Connectors by Traffic",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "33",
+                        "name": "query - 2 - Copy"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(ProcessingRegion)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by ProcessingRegion\n| order by TotalTrafficGB desc\n",
+                          "size": 3,
+                          "title": "Top Processing Regions by Traffic",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "33",
+                        "name": "query - 2 - Copy - Copy"
+                      }
+                    ]
+                  },
+                  "name": "privatstats"
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "channel",
+              "comparison": "isEqualTo",
+              "value": "private"
+            },
+            "name": "privatedestinationdetails"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(DestinationFqdn)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by DestinationFqdn\n| order by TotalTrafficGB desc\n| take 100\n",
+                    "size": 0,
+                    "title": "Top destination FQDNs",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "55",
+                  "name": "query - 1 - Copy - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(DestinationIp)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by DestinationIp\n| order by TotalTrafficGB desc\n| take 100\n",
+                    "size": 0,
+                    "title": "Top destination IPs",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "25",
+                  "name": "query - 1 - Copy - Copy - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(DestinationIp)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by DestinationPort\n| order by TotalTrafficGB desc\n| take 100\n",
+                    "size": 0,
+                    "title": "Top destination Ports",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "20",
+                  "name": "query - 1 - Copy - Copy - Copy - Copy"
+                }
+              ]
+            },
+            "name": "destinationdata"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "---"
+            },
+            "name": "text - 9"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 1,
+                  "content": {
+                    "json": "# Source\nDetails about the source origin of the traffic."
+                  },
+                  "customWidth": "25",
+                  "name": "text - 0"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(DeviceOperatingSystem) and isnotempty(DeviceId)\n| summarize UniqueDevices = dcount(DeviceId) by DeviceOperatingSystem\n| order by UniqueDevices desc\n",
+                          "size": 0,
+                          "title": "Device Operating Systems",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "categoricalbar",
+                          "chartSettings": {
+                            "seriesLabelSettings": [
+                              {
+                                "seriesName": "MacOS-Darwin-arm64",
+                                "color": "purpleDark"
+                              },
+                              {
+                                "seriesName": "Windows 11 Enterprise",
+                                "color": "blue"
+                              }
+                            ]
+                          }
+                        },
+                        "customWidth": "25",
+                        "name": "query - 0"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(AgentVersion) and isnotempty(DeviceId)\n| summarize UniqueDevices = dcount(DeviceId) by AgentVersion\n| order by UniqueDevices desc\n",
+                          "size": 0,
+                          "title": "Agent Version Distribution",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "categoricalbar"
+                        },
+                        "customWidth": "25",
+                        "name": "query - 0 - Copy"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(TransportProtocol)\n| summarize count() by TransportProtocol\n\n",
+                          "size": 3,
+                          "title": "Transport Protocols in use",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "25",
+                        "name": "query - 0 - Copy - Copy"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(NetworkProtocol)\n| summarize count() by NetworkProtocol\n\n",
+                          "size": 3,
+                          "title": "Network Protocols in use",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "25",
+                        "name": "query - 0 - Copy - Copy - Copy"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| summarize count() by InitiatingProcessName",
+                          "size": 3,
+                          "title": "Initiating Process Name",
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "piechart"
+                        },
+                        "customWidth": "50",
+                        "name": "query - 4"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| summarize count() by InitiatingProcessName\n| take 100",
+                          "size": 0,
+                          "timeContextFromParameter": "timerange",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "customWidth": "45",
+                        "name": "query - 4 - Copy"
+                      }
+                    ]
+                  },
+                  "name": "group - 1"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(SourceIp)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by SourceIp\n| order by TotalTrafficGB desc\n",
+                    "size": 0,
+                    "title": "Top Source IPs by Traffic",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "30",
+                  "name": "query - 2"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "NetworkAccessTraffic\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\"\n| where isnotempty(UserPrincipalName)\n| summarize \n    Count = count(),\n    TotalTrafficGB = round(sum(SentBytes + ReceivedBytes) / 1024.0 / 1024.0 / 1024.0, 2)\n    by UserPrincipalName\n| order by TotalTrafficGB desc\n",
+                    "size": 0,
+                    "title": "Top Users by Traffic",
+                    "timeContextFromParameter": "timerange",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces"
+                  },
+                  "customWidth": "50",
+                  "name": "query - 2 - Copy"
+                }
+              ]
+            },
+            "name": "source"
+          }
+        ]
+      },
+      "name": "queries"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/49623a5a-c45e-4381-ae75-f2b64c965a73/resourceGroups/rg-Log-ch/providers/Microsoft.OperationalInsights/workspaces/law-main-ch"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

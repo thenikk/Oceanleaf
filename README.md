@@ -1,39 +1,24 @@
-# [Oceanleaf](https://www.oceanleaf.ch)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <img alt="Oceanleaf. Frontier Partner. Grounded in Microsoft Security." src="assets/banner-light.svg">
+</picture>
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://www.linkedin.com/in/niklas-tinner/)  
-[![Website](https://img.shields.io/badge/Oceanleaf.ch-Visit-blue)](https://www.oceanleaf.ch)  
-[![Follow on X](https://img.shields.io/badge/X-Follow-black?logo=x)](https://x.com/NiklasTinner)
+Workbooks and templates from real Microsoft Cloud projects, free to use. Each folder is one tool: deploy it, read its README, done.
 
----
-## 📘 Repository Description
+| Tool | What you get | |
+|---|---|---|
+| [Intune Change Tracking](intune-change-tracking) | Who changed what in Intune, and when | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2Fintune-change-tracking%2Fazuredeploy.json) |
+| [Entra Guest Discovery](entra-guest-discovery) | Guest sign-ins, home tenants, stale guests | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2Fentra-guest-discovery%2Fazuredeploy.json) |
+| [Global Secure Access Dashboard](gsa-unified-dashboard) | Traffic across Internet, Private and M365 access | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2Fgsa-unified-dashboard%2Fazuredeploy.json) |
+| [Intune macOS Templates](intune-macos-templates) | Baseline policies for Macs | Import |
+| [AI Command Center](https://oceanleaf.ch/ai-command-center) | AI usage in your company, from Global Secure Access logs | Free download |
 
-**Oceanleaf** is a curated collection of real-world Microsoft Cloud tools, workbooks, templates, and automation—built to empower IT professionals and Managed Service Providers (MSPs) in designing, securing, and managing modern cloud environments.
+All workbooks are read-only: they run KQL queries against your Log Analytics workspace and change nothing in your tenant.
 
----
+## About
 
-## 👤 About the Author
+Oceanleaf is a Swiss Frontier Partner, grounded in Microsoft Security. We show what agents and AI can do today, on Microsoft as the platform, and run [Oceanleaf Learn](https://oceanleaf.ch/learn) for IT teams. Built by [Niklas Tinner](https://www.linkedin.com/in/niklas-tinner/), Microsoft MVP.
 
-**Niklas Tinner** is a Microsoft MVP from Switzerland, founder of [Oceanleaf.ch](https://www.oceanleaf.ch), and passionate about bridging the gap between deep technical knowledge and real-world implementation.  
-He works hands-on with customers, MSPs, and enterprise teams—specializing in **Microsoft Cloud Security**.
+[oceanleaf.ch](https://oceanleaf.ch) · [Blog](https://blog.oceanleaf.ch) · [LinkedIn](https://www.linkedin.com/in/niklas-tinner/)
 
----
-
-## 🌍 Mission
-
-> _“Make knowledge practical and accessible.”_
-
-Oceanleaf exists to deliver **clear, field-tested, and scalable solutions** for Microsoft Cloud professionals.  
-Whether you're securing identities, managing endpoints, or designing zero-trust access, Oceanleaf helps you go beyond theory—offering usable content that saves time and increases impact.
-
----
-
-## 💡 Key Values
-
-- Community & Swiss-made 🇨🇭  
-- Rooted in customer projects  
-- Built for automation and scale  
-- Documented, versioned, and maintainable  
-
-
-
-![Oceanleaf](https://www.oceanleaf.ch/content/images/2024/07/oceanleaf-niklas-tinner-1.gif)
+Issues and pull requests are welcome. Licensed under [MIT](LICENSE).

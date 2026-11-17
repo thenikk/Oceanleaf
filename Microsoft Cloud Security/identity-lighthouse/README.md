@@ -1,6 +1,6 @@
 # Identity Lighthouse
 
-One workbook that lights up the identity side of Microsoft Entra: where sign-ins come from, who is at risk, what changed in the directory and which workload identities act without a person.
+A command center for Microsoft Entra: where sign-ins come from, who is at risk, what changed and which workload identities act without a person.
 
 [![Identity Lighthouse preview with demo data](assets/preview.svg)](assets/preview.svg)
 
@@ -8,48 +8,19 @@ One workbook that lights up the identity side of Microsoft Entra: where sign-ins
 
 | | |
 |---|---|
-| Version | 1.0 |
 | Tables | `SigninLogs`, `AuditLogs`. Optional: `AADRiskyUsers`, `AADUserRiskEvents`, `AADServicePrincipalSignInLogs`, `AADManagedIdentitySignInLogs` |
-| Logs | Entra admin center → Monitoring & health → Diagnostic settings: send the log categories above to a Log Analytics workspace. |
-| Roles | Log Analytics Reader on the workspace, Workbook Contributor to save it. |
+| Roles | Log Analytics Reader, Workbook Contributor to save |
 
-The preview shows demo data, not a real tenant.
+- **Sign-in radar:** world map with origins, failures in red, routes to your main origin
+- **Pulse and posture:** heatmap by weekday and hour, rings for MFA coverage, Conditional Access and failure rate
+- **Hunting:** password spray, brute force, impossible travel, new countries, MFA fatigue
+- **Tabs:** Overview, Identity risk, Hunting, MFA and access, Privileged changes, Apps, Locations and devices, Guests, User lookup
+- **Privacy mode:** users, IPs and tenants become pseudonyms. The preview shows demo data
 
-## What you see
-
-- **Sign-in radar:** a dot-matrix world map. Every origin is a glowing dot, sized by sign-ins and red when it has failures. Routes lead to your main origin, a lighthouse beam sweeps around it
-- **Briefing and next steps:** users, failure rate, single factor sign-ins, legacy authentication, role assignments and risky users, in plain language
-- **Unusual days:** sign-ins against the expected range, spikes flagged in red
-- **Outcome model:** success, interrupted (MFA or consent required) and failure are kept apart, so MFA prompts do not inflate the failure rate
-- **Hunting:** password spray, brute force followed by success, impossible travel, first sign-in from a new country, MFA fatigue, security info changes
-- **Privacy mode:** users, actors, IP addresses and tenants become pseudonyms, display only
+Tabs without their optional tables show a query error, the rest keeps working. The workbook shows personal data, check your internal rules before you share access.
 
 ## Install
 
-**Deploy to Azure:** use the button above, pick the resource group of your workspace and paste the workspace resource ID into *Workbook Source Id*. The workbook appears under the workspace → Workbooks.
+Use the button, pick the resource group of your workspace and paste its resource ID into *Workbook Source Id*. Or: Azure Monitor → Workbooks → New → Advanced Editor (`</>`), paste [`identity-lighthouse.workbook`](identity-lighthouse.workbook), apply and save.
 
-**Manual:** Azure Monitor → Workbooks → New → Advanced Editor (`</>`), paste [`identity-lighthouse.workbook`](identity-lighthouse.workbook), apply and save.
-
-Choose the workspace in the **Workspace** parameter at the top. Dark and light theme are a parameter too.
-
-## Tabs
-
-| Tab | Content |
-|---|---|
-| Overview | Briefing, next steps, sign-in radar, activity, outcome, hours, top users and apps, directory changes |
-| Identity risk | Risky users, detections and risky sign-ins from Entra ID Protection |
-| Hunting | Detections with thresholds you can tune in the queries |
-| MFA and access | Authentication strength, Conditional Access results and gaps, clients and devices |
-| Privileged changes | Role assignments, PIM, policy changes, user lifecycle |
-| Apps | Service principals, managed identities, consents and credential changes, new applications |
-| Locations and devices | Map, countries, cities, networks, source IPs, join type and compliance |
-| Guests | Risk, invitations, home tenants and inactive guests |
-| User lookup | One user across sign-ins and directory changes |
-
-## Notes
-
-- Read-only: the workbook only runs KQL queries, it changes nothing in your tenant
-- Identity risk and Apps need their optional tables. Without them the matching items show a query error, the other tabs keep working
-- The radar uses the sign-in coordinates from the logs, rounded to one degree. Sign-ins without coordinates are not on the map
-- This workbook shows personal data about your users. Check your internal rules and the Swiss FADP before you share access
-- Provided as is, under the [MIT License](../../LICENSE)
+Read-only, provided as is under the [MIT License](../../LICENSE).

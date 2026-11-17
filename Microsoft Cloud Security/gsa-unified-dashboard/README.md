@@ -2,7 +2,7 @@
 
 One view on Global Secure Access traffic across Internet Access, Private Access and Microsoft 365: volume, destinations, sources, client versions and blocks.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2Fgsa-unified-dashboard%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2FMicrosoft%2520Cloud%2520Security%2Fgsa-unified-dashboard%2Fazuredeploy.json)
 
 | | |
 |---|---|
@@ -42,4 +42,4 @@ Full walkthrough on the [Oceanleaf Blog](https://blog.oceanleaf.ch/gsa-logs/).
 ## Notes
 
 - Read-only: the workbook only runs KQL queries, it changes nothing in your tenant
-- Provided as is, under the [MIT License](../LICENSE)
+- Provided as is, under the [MIT License](../../LICENSE)

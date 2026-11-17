@@ -2,7 +2,7 @@
 
 See who changed what in Intune, and when. Audit events by profile type, method, device identity and Cloud PC, with a search by correlation ID that shows the changed values.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2Fintune-change-tracking%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthenikk%2FOceanleaf%2Fmain%2FMicrosoft%2520Cloud%2520Security%2Fintune-change-tracking%2Fazuredeploy.json)
 
 | | |
 |---|---|
@@ -44,4 +44,4 @@ Full walkthrough on the [Oceanleaf Blog](https://blog.oceanleaf.ch/intune-change
 ## Notes
 
 - Read-only: the workbook only runs KQL queries, it changes nothing in your tenant
-- Provided as is, under the [MIT License](../LICENSE)
+- Provided as is, under the [MIT License](../../LICENSE)

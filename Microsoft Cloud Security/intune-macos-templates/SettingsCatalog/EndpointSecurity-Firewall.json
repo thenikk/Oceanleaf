@@ -1,0 +1,145 @@
+{
+  "@odata.type": "#microsoft.graph.deviceManagementConfigurationPolicy",
+  "creationSource": null,
+  "description": "",
+  "name": "EndpointSecurity-Firewall",
+  "platforms@odata.type": "#microsoft.graph.deviceManagementConfigurationPlatforms",
+  "platforms": "macOS",
+  "priorityMetaData": null,
+  "roleScopeTagIds@odata.type": "#Collection(String)",
+  "roleScopeTagIds": [
+    "0"
+  ],
+  "settingCount": 1,
+  "technologies@odata.type": "#microsoft.graph.deviceManagementConfigurationTechnologies",
+  "technologies": "mdm,appleRemoteManagement",
+  "templateReference": {
+    "@odata.type": "#microsoft.graph.deviceManagementConfigurationPolicyTemplateReference",
+    "templateId": "de730c94-09d5-4972-9672-1b9cefe77b64_1",
+    "templateFamily@odata.type": "#microsoft.graph.deviceManagementConfigurationTemplateFamily",
+    "templateFamily": "endpointSecurityFirewall",
+    "templateDisplayName": "macOS Firewall",
+    "templateDisplayVersion": "Version 1"
+  },
+  "settings": [
+    {
+      "@odata.type": "#microsoft.graph.deviceManagementConfigurationSetting",
+      "id": "0",
+      "settingInstance": {
+        "@odata.type": "#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance",
+        "settingDefinitionId": "com.apple.security.firewall_com.apple.security.firewall",
+        "settingInstanceTemplateReference": {
+          "@odata.type": "#microsoft.graph.deviceManagementConfigurationSettingInstanceTemplateReference",
+          "settingInstanceTemplateId": "1d79203d-05b3-41d2-b435-0403fc4141cb"
+        },
+        "groupSettingCollectionValue@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationGroupSettingValue)",
+        "groupSettingCollectionValue": [
+          {
+            "@odata.type": "#microsoft.graph.deviceManagementConfigurationGroupSettingValue",
+            "settingValueTemplateReference": null,
+            "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+            "children": [
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                "settingDefinitionId": "com.apple.security.firewall_enablestealthmode",
+                "settingInstanceTemplateReference": null,
+                "choiceSettingValue": {
+                  "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                  "settingValueTemplateReference": null,
+                  "value": "com.apple.security.firewall_enablestealthmode_true",
+                  "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                  "children": []
+                }
+              },
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                "settingDefinitionId": "com.apple.security.firewall_enablefirewall",
+                "settingInstanceTemplateReference": null,
+                "choiceSettingValue": {
+                  "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                  "settingValueTemplateReference": null,
+                  "value": "com.apple.security.firewall_enablefirewall_true",
+                  "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                  "children": []
+                }
+              },
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                "settingDefinitionId": "com.apple.security.firewall_allowsigned",
+                "settingInstanceTemplateReference": null,
+                "choiceSettingValue": {
+                  "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                  "settingValueTemplateReference": null,
+                  "value": "com.apple.security.firewall_allowsigned_true",
+                  "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                  "children": []
+                }
+              },
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                "settingDefinitionId": "com.apple.security.firewall_blockallincoming",
+                "settingInstanceTemplateReference": null,
+                "choiceSettingValue": {
+                  "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                  "settingValueTemplateReference": null,
+                  "value": "com.apple.security.firewall_blockallincoming_true",
+                  "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                  "children": []
+                }
+              },
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                "settingDefinitionId": "com.apple.security.firewall_allowsignedapp",
+                "settingInstanceTemplateReference": null,
+                "choiceSettingValue": {
+                  "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                  "settingValueTemplateReference": null,
+                  "value": "com.apple.security.firewall_allowsignedapp_true",
+                  "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                  "children": []
+                }
+              },
+              {
+                "@odata.type": "#microsoft.graph.deviceManagementConfigurationGroupSettingCollectionInstance",
+                "settingDefinitionId": "com.apple.security.firewall_applications",
+                "settingInstanceTemplateReference": null,
+                "groupSettingCollectionValue@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationGroupSettingValue)",
+                "groupSettingCollectionValue": [
+                  {
+                    "@odata.type": "#microsoft.graph.deviceManagementConfigurationGroupSettingValue",
+                    "settingValueTemplateReference": null,
+                    "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                    "children": [
+                      {
+                        "@odata.type": "#microsoft.graph.deviceManagementConfigurationSimpleSettingInstance",
+                        "settingDefinitionId": "com.apple.security.firewall_applications_item_bundleid",
+                        "settingInstanceTemplateReference": null,
+                        "simpleSettingValue": {
+                          "@odata.type": "#microsoft.graph.deviceManagementConfigurationStringSettingValue",
+                          "settingValueTemplateReference": null,
+                          "value": "empty"
+                        }
+                      },
+                      {
+                        "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance",
+                        "settingDefinitionId": "com.apple.security.firewall_applications_item_allowed",
+                        "settingInstanceTemplateReference": null,
+                        "choiceSettingValue": {
+                          "@odata.type": "#microsoft.graph.deviceManagementConfigurationChoiceSettingValue",
+                          "settingValueTemplateReference": null,
+                          "value": "com.apple.security.firewall_applications_item_allowed_false",
+                          "children@odata.type": "#Collection(microsoft.graph.deviceManagementConfigurationSettingInstance)",
+                          "children": []
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

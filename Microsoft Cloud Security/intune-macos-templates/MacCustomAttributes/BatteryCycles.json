@@ -1,0 +1,17 @@
+{
+  "@odata.type": "#microsoft.graph.deviceCustomAttributeShellScript",
+  "customAttributeName": null,
+  "customAttributeType@odata.type": "#microsoft.graph.deviceCustomAttributeValueType",
+  "customAttributeType": "string",
+  "displayName": "BatteryCycles",
+  "description": "",
+  "scriptContent@odata.type": "#Binary",
+  "scriptContent": "IyEvYmluL2Jhc2gNCiNzZXQgLXgNCmVjaG8gJChzeXN0ZW1fcHJvZmlsZXIgU1BQb3dlckRhdGFUeXBlIHwgZ3JlcCAiQ3ljbGUgQ291bnQ6IiB8IHNlZCAncy8uKkN5Y2xlIENvdW50OiAvLycp",
+  "runAsAccount@odata.type": "#microsoft.graph.runAsAccountType",
+  "runAsAccount": "user",
+  "fileName": "batterycycles.sh",
+  "roleScopeTagIds@odata.type": "#Collection(String)",
+  "roleScopeTagIds": [
+    "0"
+  ]
+}

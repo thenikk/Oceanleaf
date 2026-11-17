@@ -402,6 +402,80 @@
             "name": "g-kpi"
           },
           {
+            "type": 9,
+            "name": "p-gheathtml",
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "parameters": [
+                {
+                  "id": "cc1bb5f7-578c-4d3f-b7ca-ccb20c841459",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "GHeatHtml",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "query": "let s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet T = NetworkAccessTraffic\n| where TimeGenerated between (s .. e)\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\";\n\nlet HM0 = T\n| where TimeGenerated between (s .. e);\nlet hmTotal = toscalar(HM0 | count);\nlet HM = HM0\n| extend L = datetime_utc_to_local(TimeGenerated, \"{TimeZone}\")\n| summarize N = count() by Row = (toint(dayofweek(L) / 1d) + 6) % 7, H = hourofday(L);\nlet hmMax = toscalar(HM | summarize max(N));\nlet hmCells = coalesce(toscalar(HM\n| extend Op = round(0.18 + 0.82 * sqrt(todouble(N) / hmMax), 2), Hot = N == hmMax\n| extend Svg = strcat(\"<rect x='\", 38 + H * 23, \"' y='\", 6 + Row * 23, \"' width='20' height='20' rx='4' fill='\", iff(Hot, \"#B5E655\", \"#4FD1FF\"), \"' fill-opacity='\", Op, \"'\", iff(Hot, \" filter='url(#hm-glow)'\", \"\"), \"/>\")\n| summarize strcat_array(make_list(Svg, 200), \"\")), \"\");\nlet hmPeak = toscalar(HM | top 1 by N desc | project strcat(tostring(dynamic([\"Mon\",\"Tue\",\"Wed\",\"Thu\",\"Fri\",\"Sat\",\"Sun\"])[Row]), \" \", iff(H < 10, \"0\", \"\"), H, \":00\"));\nlet hmOff = toscalar(HM | summarize tolong(round(100.0 * sumif(N, Row >= 5 or H < 7 or H >= 19) / sum(N), 0)));\nlet hmBusy = toscalar(HM | summarize dcount(strcat(Row, \"-\", H)));\nprint Html = iff(hmTotal == 0, '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No traffic in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">TRAFFIC PULSE</span><span style=\"flex:1\"></span><span style=\"font-size:11px;color:#5F82A3;\">weekday × hour · {TimeZone}</span></div>',\n\"<svg viewBox='0 0 590 185' style='width:100%;height:auto;display:block;' xmlns='http://www.w3.org/2000/svg'><defs><filter id='hm-glow' x='-60%' y='-60%' width='220%' height='220%'><feGaussianBlur stdDeviation='2.2' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><rect x='38' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='6' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='29' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='52' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='75' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='98' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='121' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='38' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='61' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='84' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='107' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='130' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='153' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='176' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='199' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='222' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='245' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='268' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='291' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='314' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='337' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='360' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='383' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='406' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='429' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='452' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='475' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='498' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='521' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='544' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><rect x='567' y='144' width='20' height='20' rx='4' fill='#0B2A4A'/><text x='0' y='20' font-size='11' fill='#5F82A3'>Mon</text><text x='0' y='43' font-size='11' fill='#5F82A3'>Tue</text><text x='0' y='66' font-size='11' fill='#5F82A3'>Wed</text><text x='0' y='89' font-size='11' fill='#5F82A3'>Thu</text><text x='0' y='112' font-size='11' fill='#5F82A3'>Fri</text><text x='0' y='135' font-size='11' fill='#5F82A3'>Sat</text><text x='0' y='158' font-size='11' fill='#5F82A3'>Sun</text><text x='41' y='180' font-size='11' fill='#5F82A3'>00</text><text x='110' y='180' font-size='11' fill='#5F82A3'>03</text><text x='179' y='180' font-size='11' fill='#5F82A3'>06</text><text x='248' y='180' font-size='11' fill='#5F82A3'>09</text><text x='317' y='180' font-size='11' fill='#5F82A3'>12</text><text x='386' y='180' font-size='11' fill='#5F82A3'>15</text><text x='455' y='180' font-size='11' fill='#5F82A3'>18</text><text x='524' y='180' font-size='11' fill='#5F82A3'>21</text>\", hmCells, \"</svg>\",\n'<div style=\"display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;\">', '<div style=\"flex:1;padding:8px 10px;min-width:70px;border-radius:10px;background:#061A30;border:1px solid #1F4D7A;\"><div style=\"font-size:18px;font-weight:700;color:#B5E655;line-height:1.1;\">', hmPeak, '</div><div style=\"font-size:9px;letter-spacing:1px;white-space:nowrap;color:#5F82A3;\">PEAK HOUR</div></div>', '<div style=\"flex:1;padding:8px 10px;min-width:70px;border-radius:10px;background:#061A30;border:1px solid #1F4D7A;\"><div style=\"font-size:18px;font-weight:700;color:#F2B700;line-height:1.1;\">', strcat(hmOff, '%'), '</div><div style=\"font-size:9px;letter-spacing:1px;white-space:nowrap;color:#5F82A3;\">OFF-HOURS</div></div>', '<div style=\"flex:1;padding:8px 10px;min-width:70px;border-radius:10px;background:#061A30;border:1px solid #1F4D7A;\"><div style=\"font-size:18px;font-weight:700;color:#4FD1FF;line-height:1.1;\">', strcat(hmBusy, ' / 168'), '</div><div style=\"font-size:9px;letter-spacing:1px;white-space:nowrap;color:#5F82A3;\">ACTIVE SLOTS</div></div>', '</div>', '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange"
+                }
+              ]
+            }
+          },
+          {
+            "type": 9,
+            "name": "p-gringshtml",
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "parameters": [
+                {
+                  "id": "511a3254-627a-485c-ae27-7288e617d491",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "GRingsHtml",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "query": "let s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet T = NetworkAccessTraffic\n| where TimeGenerated between (s .. e)\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\";\nlet C = NetworkAccessTraffic | where TimeGenerated between (s .. e) | where Action contains \"{action}\";\nlet cAll = toscalar(C | count);\nlet Pc = (n:long) { let r = iff(cAll == 0, 0.0, 100.0 * n / cAll); iff(r < 10, round(r, 1), round(r, 0)) };\nlet pInet = Pc(toscalar(C | where TrafficType =~ \"internet\" | count));\nlet pEntra = Pc(toscalar(C | where TrafficType =~ \"entra\" | count));\nlet pM365 = Pc(toscalar(C | where TrafficType =~ \"microsoft365\" | count));\nlet pPriv = Pc(toscalar(C | where TrafficType =~ \"private\" | count));\nlet tx = toscalar(T | count);\nlet blockPct = iff(tx == 0, 0, tolong(round(100.0 * toscalar(T | where Action == \"Block\" | count) / tx, 0)));\nprint Html = iff(cAll == 0, '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No traffic in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">CHANNELS</span><span style=\"flex:1\"></span></div>', '<div style=\"display:flex;gap:6px;flex-wrap:nowrap;align-items:flex-start;margin-top:6px;\">', strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#4FD1FF', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(pInet) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#4FD1FF', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(pInet) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(pInet) >= 10, tostring(tolong(pInet)), tostring(pInet)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>INTERNET</div><div style='font-size:11px;color:#5F82A3;'>\", 'of all traffic', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#B5E655', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(pEntra) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#B5E655', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(pEntra) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(pEntra) >= 10, tostring(tolong(pEntra)), tostring(pEntra)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>ENTRA</div><div style='font-size:11px;color:#5F82A3;'>\", 'of all traffic', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#F2B700', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(pM365) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#F2B700', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(pM365) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(pM365) >= 10, tostring(tolong(pM365)), tostring(pM365)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>M365</div><div style='font-size:11px;color:#5F82A3;'>\", 'of all traffic', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#83BA28', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(pPriv) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#83BA28', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(pPriv) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(pPriv) >= 10, tostring(tolong(pPriv)), tostring(pPriv)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>PRIVATE</div><div style='font-size:11px;color:#5F82A3;'>\", 'of all traffic', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", iff(blockPct >= 10, '#FF5C5C', '#F2B700'), \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(blockPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", iff(blockPct >= 10, '#FF5C5C', '#F2B700'), \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(blockPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(blockPct) >= 10, tostring(tolong(blockPct)), tostring(blockPct)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>BLOCKED</div><div style='font-size:11px;color:#5F82A3;'>\", strcat(Fmt(tx), ' transactions'), \"</div></div>\"), '</div>', '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange"
+                }
+              ]
+            }
+          },
+          {
+            "type": 1,
+            "name": "g-heat",
+            "content": {
+              "json": "{GHeatHtml}"
+            },
+            "customWidth": "50"
+          },
+          {
+            "type": 1,
+            "name": "g-rings",
+            "content": {
+              "json": "{GRingsHtml}"
+            },
+            "customWidth": "50"
+          },
+          {
             "type": 1,
             "content": {
               "json": "<div style=\"font-family:Segoe UI,system-ui,sans-serif;display:flex;align-items:center;gap:10px;margin:16px 0 0 0;\"><span style=\"display:inline-block;width:8px;height:8px;border-radius:50%;background:#83BA28;\"></span><span style=\"font-size:12px;letter-spacing:3px;font-weight:700;color:#83BA28;\">ACTIVITY</span><span style=\"display:inline-block;height:1px;flex:1;background:linear-gradient(90deg,#1F4D7A,rgba(31,77,122,0));\"></span></div>"
@@ -506,27 +580,6 @@
             "customWidth": "70"
           },
           {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "NetworkAccessTraffic\n| summarize count() by TrafficType",
-              "size": 1,
-              "title": "Channel distribution",
-              "timeContext": {
-                "durationMs": 0
-              },
-              "timeContextFromParameter": "TimeRange",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
-              "visualization": "piechart"
-            },
-            "name": "g-channel",
-            "customWidth": "30"
-          },
-          {
             "type": 1,
             "content": {
               "json": "<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:8px 14px;border-radius:10px;background:#061A30;border:1px solid #1F4D7A;font-size:12px;color:#8FB0CF;\">AI apps, prompts and MCP traffic from the same logs: <a href=\"https://oceanleaf.ch/ai-command-center\">Oceanleaf AI Command Center</a>.</div>"
@@ -593,7 +646,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| summarize Apps = dcountif(CloudAppName, isnotempty(CloudAppName)), Categories = dcount(CloudAppCategory), General = round(avgif(CloudAppGeneralScore, isnotnull(CloudAppGeneralScore)), 2), Risk = round(avgif(CloudAppRiskScore, isnotnull(CloudAppRiskScore)), 2)\n| project Pack = pack_array(pack(\"Metric\", \"Cloud apps\", \"Value\", toreal(Apps), \"Ord\", 1), pack(\"Metric\", \"App categories\", \"Value\", toreal(Categories), \"Ord\", 2), pack(\"Metric\", \"Avg. general score\", \"Value\", General, \"Ord\", 3), pack(\"Metric\", \"Avg. risk score\", \"Value\", Risk, \"Ord\", 4))\n| mv-expand Pack\n| project Metric = tostring(Pack.Metric), Value = toreal(Pack.Value), Ord = toint(Pack.Ord)\n| order by Ord asc | project Metric, Value",
+              "query": "let C = toscalar(NetworkAccessTraffic\n| where Action contains \"{action}\"\n| mv-expand c = todynamic(CloudAppCategories)\n| summarize dcountif(tostring(c), isnotempty(tostring(c))));\nNetworkAccessTraffic\n| where Action contains \"{action}\"\n| summarize Apps = dcountif(CloudAppName, isnotempty(CloudAppName)), General = round(avgif(CloudAppGeneralScore, isnotnull(CloudAppGeneralScore)), 2), Risk = round(avgif(CloudAppRiskScore, isnotnull(CloudAppRiskScore)), 2)\n| project Pack = pack_array(pack(\"Metric\", \"Cloud apps\", \"Value\", toreal(Apps), \"Ord\", 1), pack(\"Metric\", \"App categories\", \"Value\", toreal(C), \"Ord\", 2), pack(\"Metric\", \"Avg. general score\", \"Value\", General, \"Ord\", 3), pack(\"Metric\", \"Avg. risk score\", \"Value\", Risk, \"Ord\", 4))\n| mv-expand Pack\n| project Metric = tostring(Pack.Metric), Value = toreal(Pack.Value), Ord = toint(Pack.Ord)\n| order by Ord asc | project Metric, Value",
               "size": 4,
               "timeContext": {
                 "durationMs": 0
@@ -631,6 +684,80 @@
             "name": "d-stats"
           },
           {
+            "type": 9,
+            "name": "p-dradarhtml",
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "parameters": [
+                {
+                  "id": "cdf81db7-ac96-4dbb-932f-1ca50010d34a",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "DRadarHtml",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "query": "let s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet T = NetworkAccessTraffic\n| where TimeGenerated between (s .. e)\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\";\n\nlet RD = T\n| where isnotempty(DestinationFqdn)\n| summarize N = count(), B = countif(Action == \"Block\"), Priv = countif(TrafficType =~ \"private\") by DestinationFqdn\n| top 24 by N desc;\nlet rdMax = toscalar(RD | summarize max(N));\nlet rdMin = toscalar(RD | summarize min(N));\nlet rdBlips = coalesce(toscalar(RD\n| extend A = (abs(hash(DestinationFqdn)) % 360) * pi() / 180.0\n| extend Rr = iff(rdMax == rdMin, 70.0, 128.0 - 108.0 * (log10(todouble(N)) - log10(todouble(rdMin))) / (log10(todouble(rdMax)) - log10(todouble(rdMin))))\n| extend X = round(160 + Rr * cos(A), 1), Y = round(160 + Rr * sin(A), 1), Col = case(B > 0, \"#FF5C5C\", Priv > 0, \"#83BA28\", \"#4FD1FF\"), Sz = round(2.5 + 4.5 * sqrt(todouble(N) / rdMax), 1)\n| extend Svg = strcat(\"<circle cx='\", X, \"' cy='\", Y, \"' r='\", Sz, \"' fill='\", Col, \"' filter='url(#rd-glow)'><animate attributeName='fill-opacity' values='1;0.35;1' dur='\", 2 + (abs(hash(DestinationFqdn)) % 3), \"s' repeatCount='indefinite'/></circle>\")\n| summarize strcat_array(make_list(Svg, 30), \"\")), \"\");\nlet rdList = coalesce(toscalar(RD | top 7 by N desc\n| extend Row = strcat(\"<div style='display:flex;align-items:center;gap:8px;margin:6px 0;'><span style='width:8px;height:8px;border-radius:50%;flex-shrink:0;background:\", case(B > 0, \"#FF5C5C\", Priv > 0, \"#83BA28\", \"#4FD1FF\"), \";'></span><span style='flex:1;font-size:12px;color:#DCE9F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>\", DestinationFqdn, \"</span><span style='font-size:12px;color:#8FB0CF;'>\", Fmt(N), \"</span></div>\")\n| summarize strcat_array(make_list(Row, 7), \"\")), \"\");\nprint Html = iff(isempty(rdBlips), '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No destinations in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">TRAFFIC RADAR</span><span style=\"flex:1\"></span><span style=\"font-size:11px;color:#8FB0CF;margin-right:10px;\"><span style=\"color:#4FD1FF;\">&#9679;</span> allowed</span><span style=\"font-size:11px;color:#8FB0CF;margin-right:10px;\"><span style=\"color:#83BA28;\">&#9679;</span> private</span><span style=\"font-size:11px;color:#8FB0CF;\"><span style=\"color:#FF5C5C;\">&#9679;</span> blocked</span></div>',\n\"<div style='display:flex;gap:18px;flex-wrap:wrap;align-items:center;'><div style='flex:1;min-width:200px;max-width:300px;'><svg viewBox='0 0 320 320' style='width:100%;height:auto;display:block;' xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='rd-bg'><stop offset='0' stop-color='#0A2747'/><stop offset='1' stop-color='#04111F'/></radialGradient><linearGradient id='rd-sweep' x1='0' x2='1' y1='0' y2='0'><stop offset='0' stop-color='#83BA28' stop-opacity='0.45'/><stop offset='1' stop-color='#83BA28' stop-opacity='0'/></linearGradient><filter id='rd-glow' x='-80%' y='-80%' width='260%' height='260%'><feGaussianBlur stdDeviation='2.2' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><circle cx='160' cy='160' r='138' fill='url(#rd-bg)' stroke='#2B5E8C'/><circle cx='160' cy='160' r='45' fill='none' stroke='#1F4D7A' stroke-width='1'/><circle cx='160' cy='160' r='90' fill='none' stroke='#1F4D7A' stroke-width='1'/><circle cx='160' cy='160' r='135' fill='none' stroke='#1F4D7A' stroke-width='1'/><line x1='25' y1='160' x2='295' y2='160' stroke='#12324F'/><line x1='160' y1='25' x2='160' y2='295' stroke='#12324F'/><path d='M160 160 L295 160 A135 135 0 0 0 255.5 64.5 Z' fill='url(#rd-sweep)'><animateTransform attributeName='transform' type='rotate' from='0 160 160' to='360 160 160' dur='6s' repeatCount='indefinite'/></path>\", rdBlips, \"<circle cx='160' cy='160' r='4' fill='#B5E655' filter='url(#rd-glow)'/></svg></div>\",\n\"<div style='flex:1;min-width:160px;'><div style='font-size:10px;letter-spacing:2.5px;font-weight:700;color:#5F82A3;margin-bottom:4px;'>TOP DESTINATIONS</div>\", rdList, \"<div style='font-size:11px;color:#5F82A3;margin-top:8px;'>Closer to the centre = more traffic</div></div></div>\", '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange"
+                }
+              ]
+            }
+          },
+          {
+            "type": 9,
+            "name": "p-dappshtml",
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "parameters": [
+                {
+                  "id": "b664dfa4-17a2-417c-ae7a-f581dad01492",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "DAppsHtml",
+                  "type": 1,
+                  "isHiddenWhenLocked": true,
+                  "query": "let s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet T = NetworkAccessTraffic\n| where TimeGenerated between (s .. e)\n| where TrafficType contains \"{channel}\"\n| where Action contains \"{action}\";\n\nlet GB = T\n| where isnotempty(CloudAppName)\n| summarize N = count(), Hot = countif(Action == \"Block\") > 0 by Label = CloudAppName\n| top 12 by N desc;\nlet gbMax = toscalar(GB | summarize max(N));\nlet gbRows = coalesce(toscalar(GB\n| extend W = round(100.0 * N / gbMax, 1), Col = iff(Hot, \"#FF5C5C\", \"#4FD1FF\")\n| extend Row = strcat(\"<div style='display:flex;align-items:center;gap:10px;margin:7px 0;'><span style='width:38%;min-width:120px;font-size:12px;color:#DCE9F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>\", Label, \"</span><span style='flex:1;height:8px;border-radius:4px;background:#0B2A4A;'><span style='display:block;height:8px;border-radius:4px;width:\", iff(W < 2, 2.0, W), \"%;background:linear-gradient(90deg,#1F4D7A,\", Col, \");box-shadow:0 0 8px \", Col, \";'></span></span><span style='width:52px;text-align:right;font-size:12px;font-weight:700;color:\", Col, \";'>\", Fmt(N), \"</span></div>\")\n| summarize strcat_array(make_list(Row, 12), \"\")), \"\");\nprint Html = iff(isempty(gbRows), '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No cloud apps in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">CLOUD APPS</span><span style=\"flex:1\"></span><span style=\"font-size:11px;color:#5F82A3;\">transactions · <span style=\"color:#FF5C5C;\">&#9679;</span> with blocks</span></div>', gbRows, '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
+                  "crossComponentResources": [
+                    "{Workspace}"
+                  ],
+                  "queryType": 0,
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "timeContext": {
+                    "durationMs": 0
+                  },
+                  "timeContextFromParameter": "TimeRange"
+                }
+              ]
+            }
+          },
+          {
+            "type": 1,
+            "name": "d-radar",
+            "content": {
+              "json": "{DRadarHtml}"
+            },
+            "customWidth": "55"
+          },
+          {
+            "type": 1,
+            "name": "d-apps-hud",
+            "content": {
+              "json": "{DAppsHtml}"
+            },
+            "customWidth": "45"
+          },
+          {
             "type": 1,
             "content": {
               "json": "<div style=\"font-family:Segoe UI,system-ui,sans-serif;display:flex;align-items:center;gap:10px;margin:16px 0 0 0;\"><span style=\"display:inline-block;width:8px;height:8px;border-radius:50%;background:#83BA28;\"></span><span style=\"font-size:12px;letter-spacing:3px;font-weight:700;color:#83BA28;\">CLOUD APPS</span><span style=\"display:inline-block;height:1px;flex:1;background:linear-gradient(90deg,#1F4D7A,rgba(31,77,122,0));\"></span></div>"
@@ -653,27 +780,6 @@
               "comparison": "isEqualTo",
               "value": "light"
             }
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "NetworkAccessTraffic\n| where Action contains \"{action}\"\n| where CloudAppName != \"\"\n| summarize Count = count() by CloudAppName\n| order by Count desc",
-              "size": 3,
-              "title": "Cloud apps",
-              "timeContext": {
-                "durationMs": 0
-              },
-              "timeContextFromParameter": "TimeRange",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspace}"
-              ],
-              "visualization": "piechart"
-            },
-            "name": "d-apps",
-            "customWidth": "50"
           },
           {
             "type": 3,
@@ -2134,7 +2240,7 @@
       "type": 1,
       "name": "footer",
       "content": {
-        "json": "<div style=\"font-family:Segoe UI,system-ui,sans-serif;text-align:right;font-size:11px;opacity:0.55;margin-top:10px;\">Read-only queries · provided \"as is\" without warranty, use at your own risk · <a href=\"https://github.com/thenikk/Oceanleaf/tree/main/gsa-unified-dashboard\">Global Secure Access Dashboard v2.0</a> by <a href=\"https://oceanleaf.ch\">Oceanleaf</a> <span style=\"color:#83BA28;\">◆</span></div>"
+        "json": "<div style=\"font-family:Segoe UI,system-ui,sans-serif;text-align:right;font-size:11px;opacity:0.55;margin-top:10px;\">Read-only queries · provided \"as is\" without warranty, use at your own risk · <a href=\"https://github.com/thenikk/Oceanleaf/tree/main/Microsoft%20Cloud%20Security/gsa-unified-dashboard\">Global Secure Access Dashboard v2.0</a> by <a href=\"https://oceanleaf.ch\">Oceanleaf</a> <span style=\"color:#83BA28;\">◆</span></div>"
       }
     }
   ],

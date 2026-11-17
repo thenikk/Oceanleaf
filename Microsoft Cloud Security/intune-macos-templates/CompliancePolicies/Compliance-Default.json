@@ -1,0 +1,51 @@
+{
+  "@odata.type": "#microsoft.graph.macOSCompliancePolicy",
+  "roleScopeTagIds@odata.type": "#Collection(String)",
+  "roleScopeTagIds": [
+    "0"
+  ],
+  "description": null,
+  "displayName": "Compliance-Default",
+  "passwordRequired": true,
+  "passwordBlockSimple": true,
+  "passwordExpirationDays": 65535,
+  "passwordMinimumLength": 8,
+  "passwordMinutesOfInactivityBeforeLock": null,
+  "passwordPreviousPasswordBlockCount": 3,
+  "passwordMinimumCharacterSetCount": null,
+  "passwordRequiredType@odata.type": "#microsoft.graph.requiredPasswordType",
+  "passwordRequiredType": "deviceDefault",
+  "osMinimumVersion": "14",
+  "osMaximumVersion": null,
+  "osMinimumBuildVersion": null,
+  "osMaximumBuildVersion": null,
+  "systemIntegrityProtectionEnabled": true,
+  "deviceThreatProtectionEnabled": false,
+  "deviceThreatProtectionRequiredSecurityLevel@odata.type": "#microsoft.graph.deviceThreatProtectionLevel",
+  "deviceThreatProtectionRequiredSecurityLevel": "unavailable",
+  "advancedThreatProtectionRequiredSecurityLevel@odata.type": "#microsoft.graph.deviceThreatProtectionLevel",
+  "advancedThreatProtectionRequiredSecurityLevel": "unavailable",
+  "storageRequireEncryption": true,
+  "gatekeeperAllowedAppSource@odata.type": "#microsoft.graph.macOSGatekeeperAppSources",
+  "gatekeeperAllowedAppSource": "macAppStoreAndIdentifiedDevelopers",
+  "firewallEnabled": true,
+  "firewallBlockAllIncoming": true,
+  "firewallEnableStealthMode": false,
+  "scheduledActionsForRule": [
+    {
+      "@odata.type": "#microsoft.graph.deviceComplianceScheduledActionForRule",
+      "ruleName": null,
+      "scheduledActionConfigurations": [
+        {
+          "@odata.type": "#microsoft.graph.deviceComplianceActionItem",
+          "gracePeriodHours": 0,
+          "actionType@odata.type": "#microsoft.graph.deviceComplianceActionType",
+          "actionType": "block",
+          "notificationTemplateId": "00000000-0000-0000-0000-000000000000",
+          "notificationMessageCCList@odata.type": "#Collection(String)",
+          "notificationMessageCCList": []
+        }
+      ]
+    }
+  ]
+}

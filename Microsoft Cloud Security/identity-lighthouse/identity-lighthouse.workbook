@@ -211,7 +211,7 @@
         "style": "tabs",
         "links": [
           {
-            "id": "eb78300d-f1fd-4998-8371-99b9bb2ae136",
+            "id": "91394004-bee9-4755-a6ca-098e61078644",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Overview",
@@ -219,7 +219,7 @@
             "style": "link"
           },
           {
-            "id": "09bb83a5-0984-4360-9c78-4853025b6c8a",
+            "id": "180b37b7-d336-4194-be52-8653c7919cdd",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Identity risk",
@@ -227,7 +227,7 @@
             "style": "link"
           },
           {
-            "id": "ba2d8f5a-92b6-4600-bb7c-86bd3c4188b4",
+            "id": "0fb6e656-a813-4ce2-82ae-8a8430468f95",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Hunting",
@@ -235,7 +235,7 @@
             "style": "link"
           },
           {
-            "id": "ff64c797-6052-4df3-8ff0-d8d5d9083bd3",
+            "id": "9108dca2-9525-47a8-b399-a3a43d7dcb83",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "MFA and access",
@@ -243,7 +243,7 @@
             "style": "link"
           },
           {
-            "id": "27cd704c-91fa-4585-b13e-96b8c7ef378f",
+            "id": "192e5d0a-a8ba-427d-8a5d-cce5f66209d6",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Privileged changes",
@@ -251,7 +251,7 @@
             "style": "link"
           },
           {
-            "id": "73c46ca5-bd26-4785-ae40-234460d5a30d",
+            "id": "01c0bbc7-caac-45ac-8def-fe5f5b404317",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Apps",
@@ -259,7 +259,7 @@
             "style": "link"
           },
           {
-            "id": "a9f94fcf-91b5-40ba-a59a-76cc2c87b2f1",
+            "id": "69bd0582-ee73-464e-bb30-41af75a6b082",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Locations and devices",
@@ -267,7 +267,7 @@
             "style": "link"
           },
           {
-            "id": "7f47b2ff-8688-454f-87eb-61ea86b1817c",
+            "id": "579bbb26-cba0-4dc3-9ac5-70f5a31168c8",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "Guests",
@@ -275,7 +275,7 @@
             "style": "link"
           },
           {
-            "id": "2ab0ef9a-28db-4605-9958-49bca7f543dd",
+            "id": "7b165504-54a1-4eca-ae82-1793a3462968",
             "cellValue": "Tab",
             "linkTarget": "parameter",
             "linkLabel": "User lookup",
@@ -298,7 +298,7 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "ee2edec9-a340-4d0c-b3be-46e5557c122b",
+                  "id": "0b3a138d-c102-48ab-b26b-ec0be4148c40",
                   "version": "KqlParameterItem/1.0",
                   "name": "OBriefingHtml",
                   "type": 1,
@@ -330,7 +330,7 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "1ef99943-5f48-483e-b360-0f8484aa1708",
+                  "id": "b282b151-1251-43fd-a5f0-b0a9a19ef69d",
                   "version": "KqlParameterItem/1.0",
                   "name": "OStepsHtml",
                   "type": 1,
@@ -362,7 +362,7 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "2f5a3e1b-17d0-43ec-b99c-d49927818725",
+                  "id": "2d844908-5760-4550-b87c-a2e5276eaf80",
                   "version": "KqlParameterItem/1.0",
                   "name": "OMapHtml",
                   "type": 1,
@@ -444,7 +444,7 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "960d9192-808c-4fa5-8e62-c278e464e504",
+                  "id": "d7186cd6-d2eb-4cec-9c63-9b5f57cb7b25",
                   "version": "KqlParameterItem/1.0",
                   "name": "OHeatHtml",
                   "type": 1,
@@ -469,12 +469,12 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "76c365ed-6b94-4167-8912-9b2562765ff1",
+                  "id": "bc5d611c-079e-4245-8572-225139765b5c",
                   "version": "KqlParameterItem/1.0",
                   "name": "ORingsHtml",
                   "type": 1,
                   "isHiddenWhenLocked": true,
-                  "query": "let Priv = \"{Privacy}\" == \"on\";\nlet Salt = \"{Workspace}\";\nlet Ps = (v:string, p:string) { iff(Priv and isnotempty(v), strcat(p, \"-\", substring(hash_sha256(strcat(Salt, \"|\", v)), 0, 8)), v) };\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet g = {TimeRange:grain};\nlet S = SigninLogs\n| extend R = tostring(ResultType)\n| extend Outcome = case(R == \"0\", \"Success\", R in (\"50074\",\"50076\",\"50158\",\"50072\",\"50079\",\"50140\",\"50097\",\"50144\"), \"Interrupted\", \"Failure\")\n| extend Country = tostring(LocationDetails.countryOrRegion), City = tostring(LocationDetails.city), OS = tostring(DeviceDetail.operatingSystem), Browser = tostring(DeviceDetail.browser)\n| extend Legacy = isnotempty(ClientAppUsed) and ClientAppUsed !in (\"Browser\", \"Mobile Apps and Desktop clients\")\n| extend SingleFactor = AuthenticationRequirement =~ \"singleFactorAuthentication\"\n| extend RiskyS = RiskLevelDuringSignIn in~ (\"low\", \"medium\", \"high\");\n\nlet RS = S | where TimeGenerated between (s .. e);\nlet rsAll = toscalar(RS | count);\nlet rsOk = toscalar(RS | where Outcome == \"Success\" | count);\nlet failPct = iff(rsAll == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Failure\" | count) / rsAll, 0)));\nlet mfaPct = iff(rsOk == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Success\" and AuthenticationRequirement =~ \"multiFactorAuthentication\" | count) / rsOk, 0)));\nlet caPct = iff(rsOk == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Success\" and ConditionalAccessStatus !~ \"notApplied\" | count) / rsOk, 0)));\nprint Html = iff(rsAll == 0, '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No sign-ins in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">POSTURE</span><span style=\"flex:1\"></span></div>', '<div style=\"display:flex;gap:6px;flex-wrap:nowrap;align-items:flex-start;margin-top:6px;\">', strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#83BA28', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(mfaPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#83BA28', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(mfaPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(mfaPct) >= 10, tostring(tolong(mfaPct)), tostring(mfaPct)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>MFA COVERAGE</div><div style='font-size:11px;color:#5F82A3;'>\", 'of successful sign-ins', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#4FD1FF', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(caPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#4FD1FF', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(caPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(caPct) >= 10, tostring(tolong(caPct)), tostring(caPct)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>CA APPLIED</div><div style='font-size:11px;color:#5F82A3;'>\", 'of successful sign-ins', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", iff(failPct >= 10, '#FF5C5C', '#F2B700'), \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(failPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", iff(failPct >= 10, '#FF5C5C', '#F2B700'), \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(failPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='60' y='66' text-anchor='middle' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(failPct) >= 10, tostring(tolong(failPct)), tostring(failPct)), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>FAILURE RATE</div><div style='font-size:11px;color:#5F82A3;'>\", strcat(Fmt(rsAll), ' sign-ins'), \"</div></div>\"), '</div>', '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
+                  "query": "let Priv = \"{Privacy}\" == \"on\";\nlet Salt = \"{Workspace}\";\nlet Ps = (v:string, p:string) { iff(Priv and isnotempty(v), strcat(p, \"-\", substring(hash_sha256(strcat(Salt, \"|\", v)), 0, 8)), v) };\nlet Fmt = (n:long) { case(isnull(n), \"0\", n >= 1000000, strcat(round(n / 1000000.0, 1), \"M\"), n >= 1000, strcat(round(n / 1000.0, 1), \"k\"), tostring(n)) };\nlet s = {TimeRange:start};\nlet e = {TimeRange:end};\nlet g = {TimeRange:grain};\nlet S = SigninLogs\n| extend R = tostring(ResultType)\n| extend Outcome = case(R == \"0\", \"Success\", R in (\"50074\",\"50076\",\"50158\",\"50072\",\"50079\",\"50140\",\"50097\",\"50144\"), \"Interrupted\", \"Failure\")\n| extend Country = tostring(LocationDetails.countryOrRegion), City = tostring(LocationDetails.city), OS = tostring(DeviceDetail.operatingSystem), Browser = tostring(DeviceDetail.browser)\n| extend Legacy = isnotempty(ClientAppUsed) and ClientAppUsed !in (\"Browser\", \"Mobile Apps and Desktop clients\")\n| extend SingleFactor = AuthenticationRequirement =~ \"singleFactorAuthentication\"\n| extend RiskyS = RiskLevelDuringSignIn in~ (\"low\", \"medium\", \"high\");\n\nlet RS = S | where TimeGenerated between (s .. e);\nlet rsAll = toscalar(RS | count);\nlet rsOk = toscalar(RS | where Outcome == \"Success\" | count);\nlet failPct = iff(rsAll == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Failure\" | count) / rsAll, 0)));\nlet mfaPct = iff(rsOk == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Success\" and AuthenticationRequirement =~ \"multiFactorAuthentication\" | count) / rsOk, 0)));\nlet caPct = iff(rsOk == 0, 0, tolong(round(100.0 * toscalar(RS | where Outcome == \"Success\" and ConditionalAccessStatus !~ \"notApplied\" | count) / rsOk, 0)));\nprint Html = iff(rsAll == 0, '<div style=\"font-family:Segoe UI,system-ui,sans-serif;padding:16px 20px;border-radius:16px;background:#04111F;border:1px solid #1F4D7A;color:#8FB0CF;font-size:13px;\">No sign-ins in this time range.</div>', strcat('<div style=\"font-family:Segoe UI,system-ui,sans-serif;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#0A2747 0%,#04111F 70%);border:1px solid #2B5E8C;padding:14px 18px 16px 18px;color:#EAF3FB;box-shadow:0 0 28px rgba(0,68,125,0.35) inset;height:100%;box-sizing:border-box;\"><div style=\"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;\"><span style=\"display:inline-block;width:10px;height:10px;border-radius:50%;background:#83BA28;box-shadow:0 0 10px #83BA28;\"></span><span style=\"font-size:11px;letter-spacing:3px;font-weight:700;color:#83BA28;\">POSTURE</span><span style=\"flex:1\"></span></div>', '<div style=\"display:flex;gap:6px;flex-wrap:nowrap;align-items:flex-start;margin-top:6px;\">', strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#83BA28', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(mfaPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#83BA28', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(mfaPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='\", round(60 - (strlen(iff(todouble(mfaPct) >= 10, tostring(tolong(mfaPct)), iff(todouble(mfaPct) == 0, \"0\", tostring(mfaPct)))) * 11.0 - countof(iff(todouble(mfaPct) >= 10, tostring(tolong(mfaPct)), iff(todouble(mfaPct) == 0, \"0\", tostring(mfaPct))), \".\") * 5.5 + 17) / 2, 1), \"' y='67' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(mfaPct) >= 10, tostring(tolong(mfaPct)), iff(todouble(mfaPct) == 0, \"0\", tostring(mfaPct))), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>MFA COVERAGE</div><div style='font-size:11px;color:#5F82A3;'>\", 'of successful sign-ins', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", '#4FD1FF', \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(caPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", '#4FD1FF', \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(caPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='\", round(60 - (strlen(iff(todouble(caPct) >= 10, tostring(tolong(caPct)), iff(todouble(caPct) == 0, \"0\", tostring(caPct)))) * 11.0 - countof(iff(todouble(caPct) >= 10, tostring(tolong(caPct)), iff(todouble(caPct) == 0, \"0\", tostring(caPct))), \".\") * 5.5 + 17) / 2, 1), \"' y='67' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(caPct) >= 10, tostring(tolong(caPct)), iff(todouble(caPct) == 0, \"0\", tostring(caPct))), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>CA APPLIED</div><div style='font-size:11px;color:#5F82A3;'>\", 'of successful sign-ins', \"</div></div>\"), strcat(\"<div style='flex:1;min-width:60px;text-align:center;'><svg viewBox='0 0 120 120' style='width:100%;max-width:120px;height:auto;display:block;margin:0 auto;' xmlns='http://www.w3.org/2000/svg'><circle cx='60' cy='60' r='48' fill='none' stroke='#12324F' stroke-width='10'/><circle cx='60' cy='60' r='48' fill='none' stroke='\", iff(failPct >= 10, '#FF5C5C', '#F2B700'), \"' stroke-width='10' stroke-linecap='round' transform='rotate(-90 60 60)' stroke-dasharray='\", round(todouble(failPct) * 3.016, 1), \" 301.6' style='filter:drop-shadow(0 0 4px \", iff(failPct >= 10, '#FF5C5C', '#F2B700'), \");'><animate attributeName='stroke-dasharray' from='0 301.6' to='\", round(todouble(failPct) * 3.016, 1), \" 301.6' dur='1.4s' fill='freeze'/></circle><text x='\", round(60 - (strlen(iff(todouble(failPct) >= 10, tostring(tolong(failPct)), iff(todouble(failPct) == 0, \"0\", tostring(failPct)))) * 11.0 - countof(iff(todouble(failPct) >= 10, tostring(tolong(failPct)), iff(todouble(failPct) == 0, \"0\", tostring(failPct))), \".\") * 5.5 + 17) / 2, 1), \"' y='67' font-size='20' font-weight='700' fill='#EAF3FB'>\", iff(todouble(failPct) >= 10, tostring(tolong(failPct)), iff(todouble(failPct) == 0, \"0\", tostring(failPct))), \"%</text></svg><div style='font-size:10px;letter-spacing:1.5px;font-weight:700;color:#8FB0CF;margin-top:4px;'>FAILURE RATE</div><div style='font-size:11px;color:#5F82A3;'>\", strcat(Fmt(rsAll), ' sign-ins'), \"</div></div>\"), '</div>', '</div>'))\n| extend Html = iff(\"{Theme}\" == \"light\", replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(replace_string(Html, \"#04111F\", \"#FFFFFF\"), \"#082544\", \"#F3F7FB\"), \"#0A2747\", \"#F3F7FB\"), \"#061A30\", \"#FFFFFF\"), \"#0A2342\", \"#FFFFFF\"), \"#051426\", \"#F6F9FC\"), \"#0B2A4A\", \"#F3F7FB\"), \"#12324F\", \"#E4ECF4\"), \"#1F4D7A\", \"#D6E1EC\"), \"#1D4A75\", \"#D6E1EC\"), \"#2B5E8C\", \"#C5D5E6\"), \"#EAF3FB\", \"#0E2A47\"), \"#DCE9F5\", \"#1D3A57\"), \"#CFE3F5\", \"#2A4766\"), \"#9DB9D3\", \"#4A6582\"), \"#8FB0CF\", \"#4F6A86\"), \"#7FA3C4\", \"#56708C\"), \"#5F82A3\", \"#5A7189\"), \"#83BA28\", \"#4C8A0E\"), \"#B5E655\", \"#3F7A0C\"), \"#F2B700\", \"#A87600\"), \"#FF5C5C\", \"#D93B3B\"), \"#4FD1FF\", \"#0B7DB5\"), \"rgba(31,77,122,0)\", \"rgba(214,225,236,0)\"), Html)",
                   "crossComponentResources": [
                     "{Workspace}"
                   ],
@@ -3998,7 +3998,7 @@
               "version": "KqlParameterItem/1.0",
               "parameters": [
                 {
-                  "id": "5d2b396d-2dea-4480-8407-fffb8652d0f1",
+                  "id": "29fdc498-9d71-4a8e-825a-948282c270f0",
                   "version": "KqlParameterItem/1.0",
                   "name": "User",
                   "label": "User (part of the UPN)",
